@@ -17,12 +17,12 @@ namespace _Project.Scripts.Configs
         [field: SerializeField] public GameObject Car { get; private set; }
         [field: SerializeField] public StartCarDirection StartDirection { get; private set; }
 
-        public Vector3 GetStartDirection()
+        public Quaternion GetStartRotation()
         {
-            if (StartDirection == CarEntity.StartCarDirection.back) return Vector3.back;
-            if (StartDirection == CarEntity.StartCarDirection.forward) return Vector3.forward;
-            if (StartDirection == CarEntity.StartCarDirection.right) return Vector3.right;
-            return Vector3.left;
+            if (StartDirection == CarEntity.StartCarDirection.back) return Quaternion.Euler(Vector3.up * 180);
+            if (StartDirection == CarEntity.StartCarDirection.forward) return Quaternion.Euler(Vector3.zero);
+            if (StartDirection == CarEntity.StartCarDirection.right) return Quaternion.Euler(Vector3.up * 90);
+            return Quaternion.Euler(Vector3.up * -90);
         }
        
     } 
