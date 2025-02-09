@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3001615083195963441}
   - component: {fileID: 913313217229442025}
   - component: {fileID: 3393491074862192613}
-  - component: {fileID: 6356598481607117391}
   - component: {fileID: 288549296649747508}
   m_Layer: 0
   m_Name: Cube
@@ -88,27 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6356598481607117391
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984016396493064107}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &288549296649747508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,5 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4f02df3abee5d4eaaed76e6ebcdd37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Id>k__BackingField: 0
   <Column>k__BackingField: 0
   <Line>k__BackingField: 0
+  <Position>k__BackingField: {x: 0, y: 0, z: 0}
+  <IsFree>k__BackingField: 1
+  CarId: 0

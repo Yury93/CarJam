@@ -164,7 +164,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelData: {fileID: 11400000, guid: a7a41cacd6ce6ee4bafb38847992bb20, type: 2}
-  gridItems: []
+  grid:
+    cellPrefab: {fileID: 288549296649747508, guid: 90591f7a26e7754428bf6f62bca9fff7, type: 3}
+  content: {fileID: 328534900}
+  cars: []
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

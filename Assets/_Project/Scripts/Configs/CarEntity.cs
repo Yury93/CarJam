@@ -3,26 +3,47 @@ using UnityEngine;
 
 namespace _Project.Scripts.Configs
 {
+    public enum Direction
+    {
+        right,
+        left,
+        forward,
+        back,
+    }
     [Serializable]
     public class CarEntity
-    {
-        public enum StartCarDirection
-        {
-            right,
-            left,
-            forward,
-            back,
-        }
-        [field: SerializeField] public int Id { get;  set; }
-        [field: SerializeField] public GameObject Car { get; private set; }
-        [field: SerializeField] public StartCarDirection StartDirection { get; private set; }
-
+    { 
+        [field: SerializeField] public int Id { get;  set; } 
+        [field: SerializeField] public Direction Direction { get; private set; }
+     
         public Quaternion GetStartRotation()
         {
-            if (StartDirection == CarEntity.StartCarDirection.back) return Quaternion.Euler(Vector3.up * 180);
-            if (StartDirection == CarEntity.StartCarDirection.forward) return Quaternion.Euler(Vector3.zero);
-            if (StartDirection == CarEntity.StartCarDirection.right) return Quaternion.Euler(Vector3.up * 90);
+            if (Direction == Direction.back) return Quaternion.Euler(Vector3.up * 180);
+            if (Direction ==  Direction.forward) return Quaternion.Euler(Vector3.zero);
+            if (Direction ==  Direction.right) return Quaternion.Euler(Vector3.up * 90);
             return Quaternion.Euler(Vector3.up * -90);
+            //if (Direction == Direction.back) return Quaternion.Euler(Vector3.up * (180 + 45));
+            //if (Direction == Direction.forward) return Quaternion.Euler(Vector3.up * (0 + 45));
+            //if (Direction == Direction.right) return Quaternion.Euler(Vector3.up * (90 + 45));
+            //return Quaternion.Euler(Vector3.up * (-90 + 45));
+        }
+        public void RndTest()
+        {
+            var rndDirection = UnityEngine.Random.Range(0, 5);
+            if (rndDirection == 1) Direction = Direction.right;
+            else if (rndDirection == 2) Direction = Direction.left;
+            else if (rndDirection == 3) Direction = Direction.forward;
+            else Direction = Direction.back;
+
+            var rndCarId = UnityEngine.Random.Range(0, 8);
+           if(rndCarId != 7)
+            {
+                Id = rndCarId;
+            } 
+            else
+            {
+                Id = 0;
+            }
         }
        
     } 

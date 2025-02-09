@@ -4,110 +4,61 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Android.Gradle;
-using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine;  
 
 namespace _Project.Scripts.GridSystem
 {
     public class Spawner : MonoBehaviour
     {
         [SerializeField] private LevelData levelData;
-        public List<GridItem> gridItems = new List<GridItem>();
+        [SerializeField] private Configs.Grid grid;
+        [SerializeField] private Transform content;
+        public List<Car> cars = new List<Car>();
+    
         [Button("Create Grid")] 
         public void CreateGrid()
         {
-            StartCoroutine(cORCreate());
-        }
-
-        private IEnumerator cORCreate()
+            grid.CreateGrid(this.transform, levelData);
+            foreach (var carEntity in levelData.CarEntities)
+            {
+                CreateCar(carEntity);
+            }
+        } 
+        private void CreateCar(CarEntity carEntity)
         {
-            gridItems.RemoveAll(n => n == null);
-            foreach (var car in gridItems)
+            foreach (var gridItem in grid.GridItems)
             {
-                if(car != null)
-                Destroy(car.gameObject);
-            }
-            gridItems.RemoveAll(n => n == null);
-            gridItems.Clear();
-            int column = 0;
-            int lines = 0;
+                Car car = levelData.Cars.First(c => c.Id == carEntity.Id);
+                bool canPlace = grid.CanPlace(gridItem.Id, carEntity.Direction, car.Size);
+                if (canPlace)
+                { 
+                    Car carInstance = Instantiate(car, content);
+                    carInstance.Init(carEntity); 
+                    Vector3 targetPosition = gridItem.Position;
+                     
+                    Quaternion startRotation = carEntity.GetStartRotation();
+                    carInstance.transform.rotation = startRotation;
+                     
+                    Vector3 startPositionOffset = carInstance.CarDirection;
+                     
+                    Vector3 worldStartPosition = carInstance.transform.TransformPoint(startPositionOffset);
+                     
+                    Vector3 correctedPosition = targetPosition - (worldStartPosition - carInstance.transform.position);
+                     
+                    carInstance.transform.position = correctedPosition;
+                     
+                    cars.Add(carInstance); 
+                    grid.MarkCellsAsOccupied(gridItem.Id, carEntity, carInstance.Size);  
 
-            int carIndex = 0;
-            for (int i = 0; i < levelData.CarCount; i++)
-            {
-                yield return new WaitForSeconds(0.1f);
+                    // Отладка
+                    Debug.Log($"Target Position: {targetPosition}");
+                    Debug.Log($"Corrected Position: {correctedPosition}");
+                    Debug.Log($"StartPoint Local Position: {startPositionOffset}");
+                    Debug.Log($"World Start Position: {worldStartPosition}");
 
-                if (levelData.Cars.Count - 1 < carIndex)
-                {
-                    carIndex = 0;
+                    break;
                 }
-
-                Quaternion carRotation = levelData.Cars[carIndex].GetStartRotation();
-                GameObject carInstance = Instantiate(levelData.Cars[carIndex].Car, Vector3.zero, carRotation, transform); // Позиция будет установлена позже
-
-
-                Vector3 carSize = GetCarSize(carInstance);
-                float maxSize = Mathf.Max(carSize.x, carSize.z);
-                 
-                Vector3 newPosition = transform.position;
-                if (i != 0)
-                {
-                    try
-                    { 
-                        if (lines >= levelData.Lines - 1)
-                        {
-                            column++;
-                            lines = 0;
-                        }
-                        else
-                        {
-                            lines++;
-                        }
-
-                        if (column >= levelData.Column)
-                        {
-                            column = 0;
-                        }
-
-                        // Рассчитываем новую позицию
-                        if (lines > 0)
-                        {
-                            newPosition = gridItems.Last().transform.position + new Vector3(0, 0, maxSize) * levelData.Space;
-                            Debug.Log("lines > 0 // ПОЗИЦИЯ COL   :  " + column + "/ LINE: "+ lines);
-                        }
-                        else if (column > 0)
-                        {
-                            if (lines == 0)
-                            {
-                                Debug.Log("lines = 0 // ПОЗИЦИЯ COL   :  " + column + "/ LINE: " + lines);
-                                newPosition = gridItems.First(g=>g.Line == 0 && g.Column == column - 1).transform.position + new Vector3(maxSize, 0, 0) * levelData.Space;
-                            } 
-                        }
-
-                        carInstance.transform.position = newPosition; 
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Error: {ex.Message}, col {column}, lin {lines}, gridItems count {gridItems.Count}");
-                    }
-                }
-                var gridItem = carInstance.GetComponent<GridItem>();
-                gridItem.SetPlace(carSize, newPosition, column, lines);
-                gridItems.Add(gridItem);
-                carIndex++; 
             }
-        }
-
-        public Vector3 GetCarSize(GameObject carPrefab)
-        {
-            Collider collider = carPrefab.GetComponent<Collider>();
-            if (collider != null)
-            {
-                return collider.bounds.size;
-            }
-
-            return Vector3.one;
-        }
+        }  
     }
 }
