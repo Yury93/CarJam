@@ -11,7 +11,7 @@ namespace _Project.Scripts.GridSystem
     public class Spawner : MonoBehaviour
     {
         [SerializeField] private LevelData levelData;
-        [SerializeField] private Configs.Grid grid;
+        [SerializeField] private GridSystem.Grid grid;
         [SerializeField] private Transform content;
         public List<Car> cars = new List<Car>();
     
@@ -46,11 +46,11 @@ namespace _Project.Scripts.GridSystem
                     Vector3 correctedPosition = targetPosition - (worldStartPosition - carInstance.transform.position);
                      
                     carInstance.transform.position = correctedPosition;
-                     
+                   // carInstance.transform.rotation *= Quaternion.Euler(new Vector3(0, 45, 0));
+
                     cars.Add(carInstance); 
                     grid.MarkCellsAsOccupied(gridItem.Id, carEntity, carInstance.Size);  
 
-                    // Отладка
                     Debug.Log($"Target Position: {targetPosition}");
                     Debug.Log($"Corrected Position: {correctedPosition}");
                     Debug.Log($"StartPoint Local Position: {startPositionOffset}");

@@ -21,11 +21,7 @@ namespace _Project.Scripts.Configs
             if (Direction == Direction.back) return Quaternion.Euler(Vector3.up * 180);
             if (Direction ==  Direction.forward) return Quaternion.Euler(Vector3.zero);
             if (Direction ==  Direction.right) return Quaternion.Euler(Vector3.up * 90);
-            return Quaternion.Euler(Vector3.up * -90);
-            //if (Direction == Direction.back) return Quaternion.Euler(Vector3.up * (180 + 45));
-            //if (Direction == Direction.forward) return Quaternion.Euler(Vector3.up * (0 + 45));
-            //if (Direction == Direction.right) return Quaternion.Euler(Vector3.up * (90 + 45));
-            //return Quaternion.Euler(Vector3.up * (-90 + 45));
+            return Quaternion.Euler(Vector3.up * -90); 
         }
         public void RndTest()
         {
