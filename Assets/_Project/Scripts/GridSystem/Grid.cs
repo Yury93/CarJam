@@ -1,5 +1,5 @@
-﻿using _Project.Scripts.Configs;
-using _Project.Scripts.GridSystem;
+﻿using _Project.Scripts.StaticData; 
+using System; 
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,37 +9,60 @@ namespace _Project.Scripts.GridSystem
     [System.Serializable]
     public class Grid
     {  
-        [SerializeField] private GridItem cellPrefab;
-        private LevelData levelData;
-        public List<GridItem> GridItems { get; private set; } = new List<GridItem>();
-        public List<GridItem>CreateGrid(Transform parent, LevelData levelData)
-        {
-            this.levelData = levelData;
-            GridItems = new List<GridItem>();
-            int idItem = 0;
-            for (int line = 0; line < levelData. Lines; line++)
-            {
-                for (int column = 0; column < levelData.Columns; column++)
-                { 
-                    if (cellPrefab != null && parent != null)
-                    {
-                        GridItem cellInstance = GameObject.Instantiate(cellPrefab, parent);
-                        cellInstance.transform.localScale = new Vector3(levelData.CellSize, levelData.CellSize, levelData.CellSize);
-                  
-                        Vector3 cellSize = GetSizeCell(cellInstance.gameObject); 
-                        SetupLocalPosition(cellInstance.gameObject, cellSize,line, column);
+        [SerializeField] private GridPoint _cellPrefab;
+        private LevelStaticData _levelData;
+        public List<GridPoint> GridItems { get; private set; } = new List<GridPoint>();
 
-                        GridItems.Add(cellInstance);
-                        cellInstance.Init(cellInstance.transform.localPosition,column,line,idItem);
-                        idItem++;
+        public List<GridPoint> CreateGrid(Transform parent, LevelStaticData levelData)
+        {
+            this._levelData = levelData;
+            GridItems = new List<GridPoint>();
+            int idItem = 0;
+
+            int gridSize = levelData.Grid.GridSize;
+            for (int line = 0; line < gridSize; line++)
+            {
+                for (int column = 0; column < gridSize; column++)
+                {
+                    if (IsInsideRhomb(line, column, gridSize))
+                    {
+                        if (_cellPrefab != null && parent != null)
+                        {
+                            GridPoint cellInstance = GameObject.Instantiate(_cellPrefab, parent);
+                            cellInstance.transform.localScale = new Vector3(levelData.Grid.CellSize, levelData.Grid.CellSize, levelData.Grid.CellSize);
+
+                            Vector3 cellSize = GetSizeCell(cellInstance.gameObject);
+                            SetupLocalPositionForRhomb(cellInstance.gameObject, cellSize, line, column, gridSize);
+                            GridItems.Add(cellInstance);
+                            cellInstance.Init(cellInstance.transform.localPosition, column, line, idItem);
+                            idItem++; 
+                        }
                     }
                 }
             }
+             
             return GridItems;
         } 
+        private bool IsInsideRhomb(int line, int column, int gridSize)
+        { 
+            int halfSize = gridSize / 2;
+            return Math.Abs(line - halfSize) + Math.Abs(column - halfSize) <= halfSize;
+        }
+
+        private void SetupLocalPositionForRhomb(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize)
+        {
+            float centrCellWidth = cellSize.x * 0.5f;
+            float centrCellHeight = cellSize.y * 0.5f;
+             
+            int halfSize = gridSize / 2;
+            float x = (column - halfSize) * (cellSize.x + _levelData.Grid.Space);
+            float z = (line - halfSize) * (cellSize.y + _levelData.Grid.Space);
+
+            cellInstance.transform.localPosition = new Vector3(x, 0,z);
+        }
         public bool CanPlace(int gridItemId,Direction direction ,int size)
         {
-            GridItem startItem = GridItems.FirstOrDefault(i => i.Id == gridItemId);
+            GridPoint startItem = GridItems.FirstOrDefault(i => i.Id == gridItemId);
             if (startItem == null || !startItem.IsFree)
             {
                
@@ -52,27 +75,27 @@ namespace _Project.Scripts.GridSystem
             for (int step = 0; step < size; step++)
             {
                 int checkLine, checkColumn;
-                CanPlaceItemInDirection(direction, startLine, startColumn, step, out checkLine, out checkColumn);
+                TranslatePoint(direction, startLine, startColumn, step, out checkLine, out checkColumn);
 
-                if (checkLine < 0 || checkLine >= levelData.Lines || checkColumn < 0 || checkColumn >= levelData.Columns)
+                if (checkLine < 0 || checkLine >= _levelData.Grid.GridSize || checkColumn < 0 || checkColumn >= _levelData.Grid.GridSize)
                 {
-                    Debug.LogError("Выход за границы сетки");
+                   // Debug.LogError("Выход за границы сетки");
                     return false;
                 }
 
-                GridItem cellToCheck = GridItems.FirstOrDefault(i => i.Line == checkLine && i.Column == checkColumn);
+                GridPoint cellToCheck = GridItems.FirstOrDefault(i => i.Line == checkLine && i.Column == checkColumn);
                 if (cellToCheck == null || !cellToCheck.IsFree)
                 {
-                    Debug.LogError("Нет места под эту машинку");
+                   // Debug.LogError("Нет места под эту машинку");
                     return false;
                 }
             }
 
             return true;
         } 
-        public void MarkCellsAsOccupied(int gridItemId, CarEntity carEntity, int size)
+        public void MarkCellsForCar(int gridItemId, CarEntity carEntity, int size)
         {
-            GridItem startItem = GridItems.FirstOrDefault(i => i.Id == gridItemId);
+            GridPoint startItem = GridItems.FirstOrDefault(i => i.Id == gridItemId);
              
             int startLine = startItem.Line;
             int startColumn = startItem.Column;
@@ -80,9 +103,9 @@ namespace _Project.Scripts.GridSystem
             for (int step = 0; step < size; step++)
             {
                 int checkLine, checkColumn;
-                CanPlaceItemInDirection(carEntity.Direction , startLine, startColumn, step, out checkLine, out checkColumn);
+                TranslatePoint(carEntity.Direction , startLine, startColumn, step, out checkLine, out checkColumn);
                  
-                GridItem cellToMark = GridItems.FirstOrDefault(i => i.Line == checkLine && i.Column == checkColumn);
+                GridPoint cellToMark = GridItems.FirstOrDefault(i => i.Line == checkLine && i.Column == checkColumn);
                 if (cellToMark != null)
                 {
                     cellToMark.SetFree(false);
@@ -91,7 +114,7 @@ namespace _Project.Scripts.GridSystem
             }
         }
 
-        private void CanPlaceItemInDirection(Direction direction, int startLine, int startColumn, int step, out int checkLine, out int checkColumn)
+        private void TranslatePoint(Direction direction, int startLine, int startColumn, int step, out int checkLine, out int checkColumn)
         {
             checkLine = startLine;
             checkColumn = startColumn;
@@ -124,8 +147,8 @@ namespace _Project.Scripts.GridSystem
             float centrCellWidth = cellSize.x * 0.5f;
             float centrCellHeight = cellSize.y * 0.5f;
             cellInstance.transform.localPosition = new Vector3(
-                column * (cellSize.x + levelData.Space) - (levelData.Columns * (cellSize.x + levelData.Space)) * 0.5f + centrCellWidth, 0,
-                line * (cellSize.y + levelData.Space) - (levelData.Lines * (cellSize.y + levelData.Space)) * 0.5f + centrCellHeight
+                column * (cellSize.x + _levelData.Grid.Space) - (_levelData.Grid.GridSize * (cellSize.x + _levelData.Grid.Space)) * 0.5f + centrCellWidth, 0,
+                line * (cellSize.y + _levelData.Grid.Space) - (_levelData.Grid.GridSize * (cellSize.y + _levelData.Grid.Space)) * 0.5f + centrCellHeight
                  
             );
         }  

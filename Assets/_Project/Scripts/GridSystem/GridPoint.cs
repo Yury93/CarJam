@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace _Project.Scripts.GridSystem
 {
-    public class GridItem : MonoBehaviour
+    public class GridPoint : MonoBehaviour
     {
         [field: SerializeField] public int Id { get; private set; }
         [field: SerializeField] public int Column { get; private set; }

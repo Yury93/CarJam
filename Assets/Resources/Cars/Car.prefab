@@ -67,8 +67,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b6df3beb1860db428e1bc9536291dda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardPoint: {fileID: 2979380882284200581}
-  rightPoint: {fileID: 5374287961079454771}
+  _forwardPoint: {fileID: 2979380882284200581}
+  _rightPoint: {fileID: 5374287961079454771}
   <Id>k__BackingField: 0
   <Size>k__BackingField: 1
 --- !u!1 &2837845609436968306

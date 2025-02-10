@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Project.Scripts.Configs
+namespace _Project.Scripts.StaticData
 {
     public enum Direction
     {
