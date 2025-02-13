@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class GameRunner : MonoBehaviour
+namespace _Project.Scripts.Infrastructure
 {
-    public Bootstrap BootstraperPrefab;
-    private void Awake()
+    public class GameRunner : MonoBehaviour
     {
-        var bootstrapper = GameObject.FindAnyObjectByType<Bootstrap>();
-        if (bootstrapper == null)
+        public Bootstrap BootstraperPrefab;
+        private void Awake()
         {
-            Instantiate(BootstraperPrefab);
-        }
+            var bootstrapper = GameObject.FindAnyObjectByType<Bootstrap>();
+            if (bootstrapper == null)
+            {
+                Instantiate(BootstraperPrefab);
+            }
 
+        }
     }
 }

@@ -1,12 +1,18 @@
+
+using System.Collections;
 using UnityEngine;
 
-public class Bootstrap : MonoBehaviour
+namespace _Project.Scripts.Infrastructure
 {
-    public Game game;
-
-    private void Awake()
+    public class Bootstrap : MonoBehaviour , ICoroutineRunner
     {
-        game = new Game(new Services());
-        DontDestroyOnLoad(gameObject);
+        public Game game;
+
+        private void Awake()
+        {
+            game = new Game (Services.ServiceLocator.Container,new SceneLoader(this));
+            DontDestroyOnLoad(gameObject);
+        }
+         
     }
 }
