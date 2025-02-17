@@ -1,4 +1,5 @@
 ﻿using _Project.Scripts.Infrastructure.Services;
+using _Project.Scripts.Infrastructure.Services.PersonPool;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace _Project.Scripts.Infrastructure.States
                 [(typeof(LoadMainState))] = new LoadMainState(this, services.Single<IStaticData>()
                   , services.Single<IGameFactory>(), sceneLoader),
                 [(typeof(LoadGameState))] = new LoadGameState(this, services.Single<IStaticData>()
-                  , services.Single<IGameFactory>(), sceneLoader),
+                  , services.Single<IGameFactory>(), services.Single<IPersonPool>(), sceneLoader),
                 [(typeof(GameLoopState))] = new GameLoopState(this, services.Single<IStaticData>()
                   , services.Single<IGameFactory>(), sceneLoader)
             };

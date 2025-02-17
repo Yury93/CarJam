@@ -1,4 +1,5 @@
-﻿using _Project.Scripts.StaticData;
+﻿using _Project.Scripts.Infrastructure.Services;
+using _Project.Scripts.StaticData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,14 @@ namespace _Project.Scripts.GridSystem
 {
     [System.Serializable]
     public class Grid : IGrid 
-    {  
-        private GridPoint _cellPrefab;
+    {
+        public const string   GRID_POINT = "Grid/GridPoint";
+        private IAssetProvider _assetProvider;
         private LevelStaticData _levelData;
         public List<GridPoint> GridItems { get; set; } = new List<GridPoint>();
-        public Grid(GridPoint cellPrefab)
+        public Grid(IAssetProvider assetProvider)
         {
-            _cellPrefab = cellPrefab;
+            _assetProvider = assetProvider;
         }
         public List<GridPoint> CreateGrid(Transform parent, LevelStaticData levelData)
         {
@@ -29,9 +31,9 @@ namespace _Project.Scripts.GridSystem
                 {
                     if (IsPointInsideShape(line, column, gridSize))
                     {
-                        if (_cellPrefab != null && parent != null)
+                        if (_assetProvider != null && parent != null)
                         {
-                            GridPoint cellInstance = GameObject.Instantiate(_cellPrefab, parent);
+                            GridPoint cellInstance = _assetProvider.instatiate(GRID_POINT, parent).GetComponent<GridPoint>();
                             cellInstance.transform.localScale = new Vector3(levelData.Grid.CellSize, levelData.Grid.CellSize, levelData.Grid.CellSize);
 
                             Vector3 cellSize = GetSizeCell(cellInstance.gameObject);
@@ -79,7 +81,7 @@ namespace _Project.Scripts.GridSystem
 
             return true;
         }
-        public void MarkCells(int gridItemId, IGridDirectionEntity directionEntity, int size)
+        public void MarkCells(int gridItemId, IGridDirectionItem directionEntity, int size)
         {
             GridPoint startItem = GridItems.FirstOrDefault(i => i.Id == gridItemId);
 
@@ -145,15 +147,5 @@ namespace _Project.Scripts.GridSystem
 
             cellInstance.transform.localPosition = new Vector3(x, 0,z);
         }
-        //private void SetupLocalPosition(GameObject cellInstance, Vector3 cellSize, int line, int column)
-        //{
-        //    float centrCellWidth = cellSize.x * 0.5f;
-        //    float centrCellHeight = cellSize.y * 0.5f;
-        //    cellInstance.transform.localPosition = new Vector3(
-        //        column * (cellSize.x + _levelData.Grid.Space) - (_levelData.Grid.GridSize * (cellSize.x + _levelData.Grid.Space)) * 0.5f + centrCellWidth, 0,
-        //        line * (cellSize.y + _levelData.Grid.Space) - (_levelData.Grid.GridSize * (cellSize.y + _levelData.Grid.Space)) * 0.5f + centrCellHeight
-
-        //    );
-        //}  
     } 
 }

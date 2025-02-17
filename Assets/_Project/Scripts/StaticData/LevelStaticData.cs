@@ -15,9 +15,9 @@ namespace _Project.Scripts.StaticData
         [Button("RndCars")]
         public void RandomCars()
         {
-            foreach (var item in Cars.CarEntities)
+            foreach (var item in Cars.GridItems)
             {
-                item.RndTest();
+                item.SetRandomDirection();
             }
         }
 

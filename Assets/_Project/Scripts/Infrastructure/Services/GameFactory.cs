@@ -1,7 +1,11 @@
 ﻿using _Project.Scripts.GameLogic;
 using _Project.Scripts.GridSystem;
+using _Project.Scripts.Helper;
+using _Project.Scripts.Infrastructure.Services.PersonPool;
 using _Project.Scripts.StaticData;
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -11,41 +15,57 @@ namespace _Project.Scripts.Infrastructure.Services
     public class GameFactory : IGameFactory
     {
         public const string MAIN_WINDOW_PATH = "Menu/MainWindow";
-        public const string GRID_POINT_PATH = "Grid/GridPoint";
-        public const string MAP_TAG = "Map";
-        private IAssetProvider assetProvider;
-
-        public GameFactory(IAssetProvider assetProvider)
+        public const string PERSON = "Game/Person/Person";
+        public const string MAP_TAG = "CarContent";
+        private IAssetProvider _assetProvider;
+        private IPersonPool _personPool;
+        public GameFactory(IAssetProvider assetProvider, IPersonPool personPool)
         {
-            this.assetProvider = assetProvider;
+            this._assetProvider = assetProvider;
+            this._personPool = personPool;
         }
         public IMainWindow CreateMainWindow(States.IStateMachine stateMachine)
         {
-            GameObject go = assetProvider.instatiate(MAIN_WINDOW_PATH);
+            GameObject go = _assetProvider.instatiate(MAIN_WINDOW_PATH);
             IMainWindow mainWindow = go.GetComponent<IMainWindow>();
             mainWindow.Construct(stateMachine);
             mainWindow.Init();
             return mainWindow;
         }
-        public void CreateGrid(IStaticData staticData)
+        public void CreateLevel(IStaticData staticData)
         {
-            GameObject gridPoint = assetProvider.instatiate(GRID_POINT_PATH);
-            IGrid grid = new _Project.Scripts.GridSystem.Grid(gridPoint.GetComponent<GridPoint>());
-
             LevelStaticData levelStaticData = staticData.GetLevelData(0);
+            var map = GameObject.FindGameObjectWithTag(MAP_TAG);
 
-            var map  = GameObject.FindGameObjectWithTag(MAP_TAG);
-            grid.CreateGrid(map.transform, levelStaticData);
+            IGrid grid = CreateGrid(levelStaticData, map); 
+            List<ICarData> cars = CreateCars(levelStaticData, map, grid);
+            SetupMapPosition(levelStaticData, map);
 
-            foreach (var carEntity in levelStaticData.Cars.CarEntities)
-            {
-                CreateCars(carEntity,grid,levelStaticData,map.transform);
-            }
+            _personPool.CreatePool(cars);
 
-            map.transform.localRotation = Quaternion.Euler(new Vector3(0, levelStaticData.Grid.GridRotate, 0));
-        }
-        private void CreateCars(IGridDirectionEntity gridDirection, _Project.Scripts.GridSystem.IGrid grid, LevelStaticData _levelData,Transform content)
+            var personSpawner = GameObject.FindAnyObjectByType<PersonSpawner>();
+            personSpawner.Construct(_personPool, this);
+            personSpawner.SpawnGroupPersons();
+        } 
+        
+        private IGrid CreateGrid(LevelStaticData levelStaticData, GameObject map)
         {
+            IGrid grid = new _Project.Scripts.GridSystem.Grid(_assetProvider);
+            grid.CreateGrid(map.transform, levelStaticData);
+            return grid;
+        }
+        private List<ICarData> CreateCars(LevelStaticData levelStaticData, GameObject map, IGrid grid)
+        {
+            List<ICarData> cars = new List<ICarData>();
+            foreach (var gridItem in levelStaticData.Cars.GridItems)
+            {
+                var car = CreateCar(gridItem, grid, levelStaticData, map.transform);
+                if (car != null) cars.Add(car);
+            }
+            return cars;
+        }
+        private Car CreateCar(IGridDirectionItem gridDirection, _Project.Scripts.GridSystem.IGrid grid, LevelStaticData _levelData,Transform content)
+        { 
             foreach (var gridItem in grid.GridItems)
             {
                 Car car = _levelData.Cars.CarPrefabs.First(c => c.Id == gridDirection.Id);
@@ -57,10 +77,10 @@ namespace _Project.Scripts.Infrastructure.Services
                     SetupCarPosition(gridDirection, gridItem, carInstance);
 
                     grid.MarkCells(gridItem.Id, gridDirection, carInstance.Size);
-
-                    break;
+                    return car; 
                 }
             }
+            return null;
         }
         private void SetupCarPosition(IDirectionEntity directionEntity, GridPoint gridItem, Car carInstance)
         {
@@ -72,5 +92,15 @@ namespace _Project.Scripts.Infrastructure.Services
             Vector3 correctedPosition = targetPosition - (worldStartPosition - carInstance.transform.position);
             carInstance.transform.position = correctedPosition;
         }
+        private static void SetupMapPosition(LevelStaticData levelStaticData, GameObject map)
+        {
+            map.transform.localRotation *= Quaternion.Euler(new Vector3(0, levelStaticData.Grid.GridRotate, 0));
+            map.transform.position += levelStaticData.Grid.OffsetPosition;
+        }
+        public IPerson CreatePerson(Vector3 position, Quaternion identity)
+        {
+            return _assetProvider.instatiate(PERSON, position).GetComponent<IPerson>();
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using _Project.Scripts.Infrastructure.Services;
+using _Project.Scripts.Infrastructure.Services.PersonPool;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,9 +13,11 @@ namespace _Project.Scripts.Infrastructure.States
         {
             _stateMachine = stateMachine;
             var assetProvider = new AssetProvider();
-            services.RegisterSingle<IAssetProvider>(assetProvider);   
-            services.RegisterSingle<IGameFactory>(new GameFactory(assetProvider));
+            services.RegisterSingle<IAssetProvider>(assetProvider);
+            services.RegisterSingle<IPersonPool>(new PersonPool());
+            services.RegisterSingle<IGameFactory>(new GameFactory(assetProvider,services.Single<IPersonPool>()));
             services.RegisterSingle<IStaticData>(new _Project.Scripts.Infrastructure.Services.StaticData());
+          
         }
         public void Enter()
         {

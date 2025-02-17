@@ -9,7 +9,7 @@ namespace _Project.Scripts.GridSystem
         List<GridPoint> GridItems { get; set; }
         List<GridPoint> CreateGrid(Transform parent, LevelStaticData levelData);
         bool CanPlace(int gridItemId, Direction direction, int size);
-        void MarkCells(int gridItemId, IGridDirectionEntity carEntity, int size);
+        void MarkCells(int gridItemId, IGridDirectionItem carEntity, int size);
         void TranslateToPoint(Direction direction, int startLine, int startColumn, int step, out int checkLine, out int checkColumn);
         Vector3 GetSizeCell(GameObject cellInstance);
     } 

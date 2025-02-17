@@ -9,7 +9,7 @@ namespace _Project.Scripts.StaticData
         forward,
         back,
     }
-    public interface IGridDirectionEntity : IDirectionEntity
+    public interface IGridDirectionItem : IDirectionEntity
     {
         public int Id { get; set; }
     }

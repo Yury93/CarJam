@@ -1,5 +1,7 @@
 ﻿using _Project.Scripts.Infrastructure.Services;
+using _Project.Scripts.Infrastructure.Services.PersonPool;
 using System;
+using UnityEngine;
 
 namespace _Project.Scripts.Infrastructure.States
 {
@@ -9,13 +11,15 @@ namespace _Project.Scripts.Infrastructure.States
         private IStaticData _staticData;
         private IGameFactory _gameFactory;
         private SceneLoader _sceneLoader;
+        private IPersonPool _personPool;
 
-        public LoadGameState(GameStateMachine gameStateMachine, IStaticData staticData, IGameFactory gameFactory, SceneLoader sceneLoader)
+        public LoadGameState(GameStateMachine gameStateMachine, IStaticData staticData, IGameFactory gameFactory,IPersonPool personPool, SceneLoader sceneLoader)
         {
             this._gameStateMachine = gameStateMachine;
             this._staticData = staticData;
             this._gameFactory = gameFactory;
             this._sceneLoader = sceneLoader;
+            this._personPool = personPool;
         }
 
         public void Enter()
@@ -27,7 +31,8 @@ namespace _Project.Scripts.Infrastructure.States
 
         private void OnLoaded()
         {
-            _gameFactory.CreateGrid(_staticData);
+            _gameFactory.CreateLevel(_staticData);
+     
             _gameStateMachine.Enter<GameLoopState>(); 
         }
 
