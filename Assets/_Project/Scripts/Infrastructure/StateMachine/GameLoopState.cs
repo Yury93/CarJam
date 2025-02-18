@@ -23,7 +23,7 @@ namespace _Project.Scripts.Infrastructure.States
 
         public void Enter()
         {
-            Debug.LogError("Добрались до гейм лупа");
+           
         }
 
         private void OnLoaded()

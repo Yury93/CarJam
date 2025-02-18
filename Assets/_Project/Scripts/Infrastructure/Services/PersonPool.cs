@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Project.Scripts.Infrastructure.Services.PersonPool
 {
-    public class PersonPool : IPersonPool, IService
+    public class PersonPool : IPersonPool
     {
         public List<PersonEntity> PersonEntities { get; private set; }
         public int TotalPersons => PersonEntities.Count;
@@ -70,7 +70,7 @@ namespace _Project.Scripts.Infrastructure.Services.PersonPool
             this.Color = color;
         }
     }
-    public interface IPersonPool
+    public interface IPersonPool : IService
     {
         public int TotalPersons { get; }
         public List<PersonEntity> PersonEntities { get; }

@@ -8,20 +8,19 @@ namespace _Project.Scripts.Infrastructure.Services
         private static ServiceLocator _instance;
         public static ServiceLocator Container => _instance ?? (_instance = new ServiceLocator());
 
-        public void RegisterSingle<IService>(IService service)
+        public void RegisterSingle<TService>(TService service) where TService : IService
         {
-            RegisterServices<IService>.ServiceInstance = service;
-            Debug.Log($"Регистрация {service}");
+            RegisterServices<TService>.ServiceInstance = service; 
         }
-        public IService Single<IService>()
+        public TService Single<TService>() where TService : IService
         {
-            IService service = RegisterServices<IService>.ServiceInstance; 
+            TService service = RegisterServices<TService>.ServiceInstance; 
             return service;
         }
 
-        private static class RegisterServices<IService>
+        private static class RegisterServices<TService> where TService : IService
         {
-            public static IService ServiceInstance;
+            public static TService ServiceInstance;
         }
     }
 
