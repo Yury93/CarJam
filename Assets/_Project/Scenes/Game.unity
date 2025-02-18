@@ -719,9 +719,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 328534900}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cars
-  m_TagString: CarMap
+  m_TagString: CarContent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1044,7 +1044,7 @@ GameObject:
   m_Component:
   - component: {fileID: 517151865}
   - component: {fileID: 517151866}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
