@@ -1,13 +1,9 @@
 ﻿using _Project.Scripts.GameLogic;
-using _Project.Scripts.GridSystem;
-using _Project.Scripts.Helper;
+using _Project.Scripts.GridSystem; 
 using _Project.Scripts.Infrastructure.Services.PersonPool;
-using _Project.Scripts.StaticData;
-using NUnit.Framework;
-using System;
+using _Project.Scripts.StaticData; 
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+using System.Linq; 
 using UnityEngine;
 
 namespace _Project.Scripts.Infrastructure.Services
@@ -16,6 +12,7 @@ namespace _Project.Scripts.Infrastructure.Services
     {
         public const string MAIN_WINDOW_PATH = "Menu/MainWindow";
         public const string PERSON = "Game/Person/Person";
+        public const string CAR_PATH = "Game/CarPath";
         public const string MAP_TAG = "CarContent";
         private IAssetProvider _assetProvider;
         private IPersonPool _personPool;
@@ -43,8 +40,11 @@ namespace _Project.Scripts.Infrastructure.Services
 
             _personPool.CreatePool(cars);
 
+            var carPath = _assetProvider.instatiate(CAR_PATH).GetComponent<CarPath>();
+
             var personSpawner = GameObject.FindAnyObjectByType<PersonSpawner>();
             personSpawner.Construct(_personPool, this);
+            personSpawner.SetCarStands(carPath.Stands);
             personSpawner.SpawnGroupPersons();
         } 
         

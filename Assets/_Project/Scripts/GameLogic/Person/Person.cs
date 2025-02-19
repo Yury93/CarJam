@@ -21,8 +21,11 @@ namespace _Project.Scripts.GameLogic
         [field: SerializeField] public float Speed { get; private set; } = 4f;
         [field: SerializeField] public PersonEntity PersonEntity { get; private set; }
         public Transform MyTransform => gameObject.transform;
-     
-         
+
+        public Color Color =>  PersonEntity.Color;
+
+        public bool InCar { get  ; set  ; }
+
         public void Init(PersonEntity personEntity)
         {
             this.PersonEntity = personEntity;
@@ -37,7 +40,9 @@ namespace _Project.Scripts.GameLogic
         }
         public void MoveToPath()
         {
-            if (_corMove != null)
+            if (InCar) return;
+
+            if ( _corMove != null)
             {
                 StopCoroutine(_corMove);
             }

@@ -1162,7 +1162,7 @@ MonoBehaviour:
   _radius: 1
   _space: 0.65
   <PersonAnimator>k__BackingField: {fileID: 2112126153137026190}
-  <Speed>k__BackingField: 20
+  <Speed>k__BackingField: 15
   <PersonEntity>k__BackingField:
     Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &2112126153137026190

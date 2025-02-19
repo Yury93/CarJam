@@ -471,6 +471,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3460947885878681677, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: _forwardRaycastDistance
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5374287961079454771, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5

@@ -1,7 +1,9 @@
 using _Project.Scripts.Infrastructure.Services;
-using _Project.Scripts.Infrastructure.Services.PersonPool; 
+using _Project.Scripts.Infrastructure.Services.PersonPool;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq; 
 using UnityEngine;
 
 namespace _Project.Scripts.GameLogic
@@ -12,6 +14,7 @@ namespace _Project.Scripts.GameLogic
         [SerializeField] private List<IPerson> _personsOnLevel = new List<IPerson>();
         [SerializeField] private float _spawnDelay = 0.1f;
         [SerializeField] private List<Transform> _path;
+        [SerializeField] private List<CarStand> _carStands;
         private Coroutine corSpawn;
         private IPersonPool _personPool;
         private IGameFactory _gameFactory;
@@ -20,6 +23,20 @@ namespace _Project.Scripts.GameLogic
             this._personPool = personPool;
             this._gameFactory = gameFactory;
         }
+        public void SetCarStands(List<CarStand> carStands)
+        {
+            _carStands = carStands;
+            foreach (var stand in carStands)
+            {
+                stand.onStopCar += OnStopCar;
+            }
+        }
+
+        private void OnStopCar(Car car)
+        {
+            Debug.Log("Человечки садятся в транспорт. Если мест в машинке нет, то машинка уезжает");
+        }
+
         public void SpawnGroupPersons()
         {
             var poolPersons = _personPool.GetPersonsGroup();

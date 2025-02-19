@@ -69,6 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _rotationSpeed: 20
+  _forwardRaycastDistance: 1.1
 --- !u!65 &60716666093808361
 BoxCollider:
   m_ObjectHideFlags: 0

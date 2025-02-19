@@ -7,6 +7,8 @@ namespace _Project.Scripts.GameLogic
     {
         Transform MyTransform { get; }
         float Speed { get; }
+        Color Color { get; }
+        bool InCar { get; set; }
         void Init(PersonEntity personEntity);
     }
 }
