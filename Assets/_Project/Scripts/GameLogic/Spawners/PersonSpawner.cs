@@ -132,7 +132,7 @@ namespace _Project.Scripts.GameLogic
             {
                 if (_personsOnLevel.Count < _maxPersonOnLevel)
                 {
-                    yield return new WaitForSeconds(delay);
+                    yield return new WaitForSecondsRealtime(delay);
                     var person = _gameFactory.CreatePerson(transform.position, Quaternion.identity);
                     person.MyTransform.SetParent(this.transform);
                     person.Init(personItem);

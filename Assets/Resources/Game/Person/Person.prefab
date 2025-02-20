@@ -1159,12 +1159,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderer: {fileID: 8305510181831196853}
-  _radius: 1
-  _space: 0.65
+  _space: 2
   <PersonAnimator>k__BackingField: {fileID: 2112126153137026190}
-  <Speed>k__BackingField: 15
+  <Speed>k__BackingField: 10
   <PersonEntity>k__BackingField:
     Color: {r: 1, g: 1, b: 1, a: 1}
+    ColorTag: 0
+  <Number>k__BackingField: 0
 --- !u!114 &2112126153137026190
 MonoBehaviour:
   m_ObjectHideFlags: 0

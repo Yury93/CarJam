@@ -9,8 +9,7 @@ namespace _Project.Scripts.GameLogic
 {
     public class Person : MonoBehaviour, IPerson
     {
-        [SerializeField] private Renderer _renderer;
-        [SerializeField] private float _radius;
+        [SerializeField] private Renderer _renderer; 
         [SerializeField] private float _space = 0.45f;
         private int _layerMask;
         private List<Transform> _path;
