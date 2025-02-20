@@ -68,8 +68,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _rotationSpeed: 20
+  _rotationSpeed: 15
   _forwardRaycastDistance: 1.1
+  _carPath: {fileID: 0}
+  <IsStand>k__BackingField: 0
 --- !u!65 &60716666093808361
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -1,7 +1,9 @@
 using _Project.Scripts.Helper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 namespace _Project.Scripts.GameLogic
@@ -18,7 +20,9 @@ namespace _Project.Scripts.GameLogic
         private RaycastHit[] _raycastHits;
         private Coroutine _corMove;
         private CarStand _carStand;
+        [SerializeField] private PathBuilder _carPath;
         public bool IsMoveProcess { get; private set; }
+        [field: SerializeField] public bool IsStand { get; set; }
 
         private void Start()
         { 
@@ -26,6 +30,16 @@ namespace _Project.Scripts.GameLogic
 
             _startPosition = transform.position;
             _originalPath = new List<Vector3>();
+        }
+        public void SetStandTarget(CarStand freeStand)
+        {
+            _carStand = freeStand;
+            _carStand.Free = false;
+            //_carStand.WaitCar();
+        }
+        public void SetPathBuilder(PathBuilder carPath)
+        {
+            _carPath = carPath;
         }
         public void CreateNewPath(List<Vector3> path)
         {
@@ -37,10 +51,14 @@ namespace _Project.Scripts.GameLogic
         [Button("Move")]
         public void Move()
         {
-            if (IsMoveProcess || _carStand && Vector3.Distance(_carStand.transform.position, transform.position) <= Constants.EPSILON) return; 
-            CreateNewPath(CarPath.instance.GetPath(this)); 
+            if (IsMoveProcess || _carStand &&
+                Vector3.Distance(_carStand.transform.position, transform.position) <= Constants.EPSILON)
+                return; 
+
+            CreateNewPath(_carPath.GetPath(this)); 
             if (_corMove != null) StopCoroutine(_corMove);
             _corMove = StartCoroutine(CorMove(_originalPath));
+            StartCoroutine(CorCheckCarForward());
         }
         [Button("cancelMove")]
         public void CancelMove()
@@ -53,15 +71,12 @@ namespace _Project.Scripts.GameLogic
                 _corMove = StartCoroutine(CorMove(_currentPath,isBack:true));
             }
         }
-        private IEnumerator CorMove(List<Vector3> path,bool isBack = false)
+        public IEnumerator CorMove(List<Vector3> path,bool isBack = false)
         {
             int pathIndex = 0;
             IsMoveProcess = true;
             _originalRotations = new List<Quaternion>();
-            if(isBack == false)
-            {
-                StartCoroutine(CorCheckCarForward());
-            }
+             
             while (pathIndex < path.Count)
             {
                 Vector3 nextPoint = path[pathIndex];
@@ -69,12 +84,14 @@ namespace _Project.Scripts.GameLogic
 
                 Quaternion targetRotation = GetTargetRotation(isBack, direction); 
                 _originalRotations.Add(targetRotation);
-
                 while (Vector3.Distance(transform.position, nextPoint) > Constants.EPSILON)
-                {
+                { 
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-                    transform.position = Vector3.MoveTowards(transform.position, nextPoint, _speed * Time.deltaTime);
-                  
+                      transform.position = Vector3.MoveTowards(transform.position, nextPoint, _speed * Time.deltaTime);
+                     
+                    //float step = _speed * Time.deltaTime;
+                    //transform.position = Vector3.Lerp(transform.position, nextPoint, step);
+
                     yield return null;
                 }
                 pathIndex++;
@@ -83,18 +100,23 @@ namespace _Project.Scripts.GameLogic
         }
         private IEnumerator CorCheckCarForward()
         {
-            if (_carStand) _carStand.Free = false;
-            while (IsMoveProcess)
-            {
+     
+            while (IsMoveProcess && _carStand )
+            { 
                 CarMover carMover;
                 if (CheckForward() != 0 && _raycastHits[0].collider.TryGetComponent<CarMover>(out carMover))
                 {
                     if (carMover && carMover.IsMoveProcess == false)
                     {
                         IsMoveProcess = false;
+                        if (_carStand != null)
+                        {
+                            _carStand.Free = true;
+                            _carStand = null;
+                        }
                         if (_corMove != null) StopCoroutine(_corMove);
                         _corMove = StartCoroutine(CorMove(new List<Vector3> { _startPosition }, isBack: true));
-                        if (_carStand) _carStand.Free = true;
+           
                         break;
                     }
                 }
@@ -124,11 +146,7 @@ namespace _Project.Scripts.GameLogic
                 Color.red, _forwardRaycastDistance);
 
             return LaunchRaycast(transform.TransformDirection(Vector3.forward), _forwardRaycastDistance);
-        }
-
-        public void SetStandTarget(CarStand freeStand)
-        {
-           _carStand = freeStand;
-        }
+        } 
+       
     }  
 }

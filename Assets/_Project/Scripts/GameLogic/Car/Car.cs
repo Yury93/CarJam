@@ -1,18 +1,20 @@
 using _Project.Scripts.StaticData;
 using System.Collections.Generic;
 using UnityEngine;
-using static _Project.Scripts.StaticData.GridItem;
 
 namespace _Project.Scripts.GameLogic
 {
     public class Car : MonoBehaviour, ICarData
     {
         [SerializeField] private Transform _forwardPoint, _rightPoint;
+        private int markPlaceCount;
         [field: SerializeField] public int Id { get; set; }
         [field: SerializeField] public int Size { get; private set; } = 1;
         [field:SerializeField] public Color Color { get; private set; } = Color.white;
         [field: SerializeField] public List<Transform> Placements { get; set; }
         [field: SerializeField] public int CountPlace => Placements.Count;
+        [field: SerializeField] public int Number { get;  set; } = 0;
+        [field: SerializeField] public ColorTag ColorTag { get; private set; }
         public Vector3 GetDirection
         {
             get
@@ -22,27 +24,26 @@ namespace _Project.Scripts.GameLogic
                 if (DirectionEntity.Direction == Direction.right) return _rightPoint.position;
                 else return -_rightPoint.position;
             }
-        }
-
+        } 
         public IGridDirectionItem DirectionEntity { get; private set; }
+        public bool IsFull => Placements.Count <= markPlaceCount;
+
+ 
+
         public virtual void Init(IGridDirectionItem dirEntity)
         {
             this.DirectionEntity = dirEntity;
+            Number = dirEntity.Number;
         }
-
+        public void SetupPerson(IPerson person)
+        { 
+            person.Speed = 0;
+            person.MyTransform.SetParent(Placements[markPlaceCount]);
+            person.InCar = true;
+            person.MyTransform.localPosition = Vector3.zero;
+            person.MyTransform.localRotation = Quaternion.identity;
+            person.MyTransform.GetComponent<PersonAnimator>().PlaySit();
+            markPlaceCount++;
+        }
     }
-}
-public interface ICarData : IGridItem
-{
-    public int Size { get; }
-    public Color Color { get; }
-    public List<Transform> Placements { get; set; }
-    public int CountPlace => Placements.Count;
-}
-public interface IGridItem
-{
-    int Id { get; set; }
-    Vector3 GetDirection { get; }
-    void Init(IGridDirectionItem dirEntity);
-    
 }

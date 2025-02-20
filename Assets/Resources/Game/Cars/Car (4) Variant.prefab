@@ -259,6 +259,10 @@ PrefabInstance:
       propertyPath: '<Placements>k__BackingField.Array.data[3]'
       value: 
       objectReference: {fileID: 1552751990857303707}
+    - target: {fileID: 8047927719692139015, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

@@ -12,6 +12,7 @@ namespace _Project.Scripts.StaticData
     public interface IGridDirectionItem : IDirectionEntity
     {
         public int Id { get; set; }
+        public int Number { get; set; }
     }
     public interface IDirectionEntity
     {

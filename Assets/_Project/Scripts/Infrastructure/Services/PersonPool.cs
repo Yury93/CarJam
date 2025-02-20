@@ -1,9 +1,8 @@
+using _Project.Scripts.GameLogic;
 using _Project.Scripts.Helper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace _Project.Scripts.Infrastructure.Services.PersonPool
 {
@@ -19,9 +18,10 @@ namespace _Project.Scripts.Infrastructure.Services.PersonPool
             {
                 for (int placePoint = 0; placePoint < car.Placements.Count; placePoint++)
                 {
-                    PersonEntities.Add(new PersonEntity(car.Color));
+                    PersonEntities.Add(new PersonEntity(car.Color,car.ColorTag));
                 }
             }
+            MiniUI.instance.ShowQueue(TotalPersons);
             return PersonEntities;
         }
         public List<PersonEntity> GetPersonsGroup()
@@ -53,29 +53,14 @@ namespace _Project.Scripts.Infrastructure.Services.PersonPool
             persons.AddRange(otherColors);
 
             persons.Shuffle();
+ 
             return persons;
         }
 
         public void RemovePersonEntity(PersonEntity personEntity)
         { 
-                PersonEntities.Remove(personEntity); 
+                PersonEntities.Remove(personEntity);
+            MiniUI.instance.ShowQueue(TotalPersons);
         }
-    }
-    [Serializable]
-    public struct PersonEntity
-    {
-        public Color Color;
-        public PersonEntity(Color color)
-        {
-            this.Color = color;
-        }
-    }
-    public interface IPersonPool : IService
-    {
-        public int TotalPersons { get; }
-        public List<PersonEntity> PersonEntities { get; }
-        List<PersonEntity> CreatePool(List<ICarData> carDatas);
-        List<PersonEntity> GetPersonsGroup();
-        void RemovePersonEntity( PersonEntity  personColor);
     }
 }

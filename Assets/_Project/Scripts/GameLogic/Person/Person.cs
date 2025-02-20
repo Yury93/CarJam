@@ -1,5 +1,6 @@
 using _Project.Scripts.Helper;
 using _Project.Scripts.Infrastructure.Services.PersonPool;
+using _Project.Scripts.StaticData;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,13 +19,14 @@ namespace _Project.Scripts.GameLogic
         private int _currentPathIndex = 0;
         private readonly string _materialColor = "_BaseColor";
         [field: SerializeField] public PersonAnimator PersonAnimator { get; private set; }
-        [field: SerializeField] public float Speed { get; private set; } = 4f;
+        [field: SerializeField] public float Speed { get; set; } = 4f;
         [field: SerializeField] public PersonEntity PersonEntity { get; private set; }
-        public Transform MyTransform => gameObject.transform;
-
-        public Color Color =>  PersonEntity.Color;
-
+        [field: SerializeField] public int Number { get; set; } 
+        [field: SerializeField] public ColorTag ColorTag => PersonEntity.ColorTag;
+        public Transform MyTransform => gameObject.transform; 
+        public Color Color =>  PersonEntity.Color; 
         public bool InCar { get  ; set  ; }
+ 
 
         public void Init(PersonEntity personEntity)
         {

@@ -182,6 +182,10 @@ PrefabInstance:
       value: 0.27058825
       objectReference: {fileID: 0}
     - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <ColorTag>k__BackingField
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: <Placements>k__BackingField.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -197,6 +201,10 @@ PrefabInstance:
       propertyPath: '<Placements>k__BackingField.Array.data[3]'
       value: 
       objectReference: {fileID: 309480512850689864}
+    - target: {fileID: 8047927719692139015, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.228
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

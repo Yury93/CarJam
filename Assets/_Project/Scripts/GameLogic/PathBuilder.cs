@@ -7,19 +7,15 @@ using UnityEngine;
 
 namespace _Project.Scripts.GameLogic
 {
-    public class CarPath : MonoBehaviour
+    public class PathBuilder : MonoBehaviour
     {
         [SerializeField] private List<Transform> _points;
         [Range(0, 4), SerializeField] private int _lowerLine = 4;
         [Range(0, 4), SerializeField] private int _upLine = 2;
         [SerializeField] private int _upPoint1 = 2;
-        [SerializeField] private int _upPoint2 = 3;
-        public static CarPath instance;// избавиться от синглтона
+        [SerializeField] private int _upPoint2 = 3; 
         [field: SerializeField] public List<CarStand> Stands { get; private set; }
-        private void Start()
-        {
-            instance = this;
-        }
+       
         public List<Vector3> GetPath(CarMover carMover)
         {
             var freeStand = Stands.FirstOrDefault(s => s.Free);
@@ -71,8 +67,7 @@ namespace _Project.Scripts.GameLogic
             {
                 path.Add(_points[_upPoint2].position);
             }
-        }
-
+        } 
         private void AddFirstPoint(List<Vector3> path,
             Vector3 carPosition,
             Vector3 rayDirection,
@@ -133,10 +128,10 @@ namespace _Project.Scripts.GameLogic
             }
             return false;
         }
-        private void Update()
-        {
-            ShowDebugLine();
-        }
+        //private void Update()
+        //{
+        //    ShowDebugLine();
+        //}
         private void ShowDebugLine()
         {
             for (int i = 0; i < _points.Count; i++)

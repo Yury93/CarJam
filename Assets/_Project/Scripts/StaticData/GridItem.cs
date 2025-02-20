@@ -11,8 +11,8 @@ namespace _Project.Scripts.StaticData
     { 
         [field: SerializeField] public int Id { get;  set; } 
         [field: SerializeField] public Direction Direction { get;  set; }
- 
- 
+        [field: SerializeField] public int Number { get  ; set  ; }
+
         public Quaternion GetTransformDirection()
         {
             if (Direction == Direction.back) return Quaternion.Euler(Vector3.up * 180);
