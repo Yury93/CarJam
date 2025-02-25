@@ -4,16 +4,17 @@ using _Project.Scripts.Infrastructure.Services.PersonPool;
 using _Project.Scripts.Infrastructure.States;
 using _Project.Scripts.StaticData;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _Project.Scripts.Infrastructure.Services
 {
     public class GameFactory : IGameFactory
     {
-        public const string MAIN_WINDOW_PATH = "Menu/MainWindow";
-        public const string PERSON = "Game/Person/Person";
-        public const string PATH_BUILDER = "Game/PathBuilder";
+        public const string MAIN_WINDOW_PATH = "MainWindow";
+        public const string PERSON = "Person";
+        public const string PATH_BUILDER = "PathBuilder";
         public const string MAP_TAG = "CarContent";
         private IAssetProvider _assetProvider;
         private IPersonPool _personPool;
@@ -24,24 +25,30 @@ namespace _Project.Scripts.Infrastructure.Services
             this._personPool = personPool;
             this._stateMachine = stateMachine;
         }
-        public IMainWindow CreateMainWindow(States.IStateMachine stateMachine)
+        public async Task<IMainWindow> CreateMainWindowAsync(States.IStateMachine stateMachine)
         {
-            GameObject go = _assetProvider.instatiate(MAIN_WINDOW_PATH);
+            var task =_assetProvider.instatiateAsync(MAIN_WINDOW_PATH) ;
+            await task;
+            var go = task.Result;
             IMainWindow mainWindow = go.GetComponent<IMainWindow>();
             mainWindow.Construct(stateMachine);
             mainWindow.Init();
             return mainWindow;
         }
-        public void CreateLevel(IStaticData staticData)
+        public async void CreateLevelAsync(IStaticData staticData)
         {
             LevelStaticData levelStaticData = staticData.GetLevelData(0);
             var map = GameObject.FindGameObjectWithTag(MAP_TAG);
             GameObject.FindAnyObjectByType<MiniUI>().Construct(stateMachine:_stateMachine );
 
-            IGrid grid = CreateGrid(levelStaticData, map);
+            var gridTask = CreateGrid(levelStaticData, map);
+            await gridTask;
 
-            var carPath = _assetProvider.instatiate(PATH_BUILDER).GetComponent<PathBuilder>();
-            List<ICarData> cars = CreateCars(levelStaticData, map, grid,carPath);
+            var pathBuildTask = _assetProvider.instatiateAsync(PATH_BUILDER);
+            await pathBuildTask;
+
+            var carPath = pathBuildTask.Result.GetComponent<PathBuilder>();
+            List<ICarData> cars = CreateCars(levelStaticData, map, gridTask.Result,carPath);
             SetupMapPosition(levelStaticData, map);
 
             _personPool.CreatePool(cars);
@@ -51,14 +58,17 @@ namespace _Project.Scripts.Infrastructure.Services
             personSpawner.SetCarStands(carPath.Stands);
             personSpawner.SpawnGroupPersons();
         }
-        public IPerson CreatePerson(Vector3 position, Quaternion identity)
+        public async Task<IPerson> CreatePersonAsync(Vector3 position, Quaternion identity)
         {
-            return _assetProvider.instatiate(PERSON, position).GetComponent<IPerson>();
+            var task = _assetProvider.instatiateAsync(PERSON, position);
+            await task;
+            var person = task.Result.GetComponent<IPerson>();
+            return person;
         }
-        private IGrid CreateGrid(LevelStaticData levelStaticData, GameObject map)
+        private async Task<IGrid> CreateGrid(LevelStaticData levelStaticData, GameObject map)
         {
             IGrid grid = new _Project.Scripts.GridSystem.Grid(_assetProvider);
-            grid.CreateGrid(map.transform, levelStaticData);
+           await grid.CreateGrid(map.transform, levelStaticData);
             return grid;
         }
         private List<ICarData> CreateCars(LevelStaticData levelStaticData, GameObject map, IGrid grid, PathBuilder carPath)

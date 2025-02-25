@@ -127,22 +127,31 @@ namespace _Project.Scripts.GameLogic
         }
         private IEnumerator CorSpawn(List<PersonEntity> persons, float delay)
         {
- 
+            IPerson perviousPerson = null;
             foreach (var personItem in persons)
             {
                 if (_personsOnLevel.Count < _maxPersonOnLevel)
                 {
-                    yield return new WaitForSecondsRealtime(delay);
-                    var person = _gameFactory.CreatePerson(transform.position, Quaternion.identity);
-                    person.MyTransform.SetParent(this.transform);
-                    person.Init(personItem);
-                    person.SetPath(_path);
-                    person.MoveToPath();
-                    person.Number = number;
-                    _personsOnLevel.Add(person);
-                    _personPool.RemovePersonEntity(personItem);
-                    number++;
+                    if (perviousPerson == null
+                         || perviousPerson != null
+                         && Vector3.Distance(perviousPerson.MyTransform.position, transform.position) > perviousPerson.Space)
+                    {
+                        var task = _gameFactory.CreatePersonAsync(transform.position, Quaternion.identity);
+                        yield return new WaitUntil(() => task.IsCompleted);
+                        var person = task.Result;
+                        person.MyTransform.SetParent(this.transform);
+                        person.Init(personItem);
+                        person.SetPath(_path);
+                        person.MoveToPath();
+                        person.Number = number;
+                        _personsOnLevel.Add(person);
+                        _personPool.RemovePersonEntity(personItem);
+                        number++;
+                        perviousPerson = person;
+                    }
+                    yield return null;
                 }
+              
             }
         }
         [Button("cal log")]

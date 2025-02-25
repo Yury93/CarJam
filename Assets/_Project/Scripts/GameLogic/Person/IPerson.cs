@@ -12,6 +12,7 @@ namespace _Project.Scripts.GameLogic
         ColorTag ColorTag { get; }
         float Speed { get; set; }
         bool InCar { get; set; }
+       float Space {  get;  }
         void Init(PersonEntity personEntity);
     }
 }

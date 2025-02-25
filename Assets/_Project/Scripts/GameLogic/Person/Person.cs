@@ -25,7 +25,7 @@ namespace _Project.Scripts.GameLogic
         public Transform MyTransform => gameObject.transform; 
         public Color Color =>  PersonEntity.Color; 
         public bool InCar { get  ; set  ; }
- 
+        public float Space => _space;
 
         public void Init(PersonEntity personEntity)
         {

@@ -263,8 +263,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9eeb61ec0d2d8647b15be8ac7ef5b67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxPersonOnLevel: 35
-  _spawnDelay: 0.25
+  _maxPersonOnLevel: 23
+  _spawnDelay: 0.3
   _path:
   - {fileID: 4467432506753585052}
   - {fileID: 3385916034377338091}

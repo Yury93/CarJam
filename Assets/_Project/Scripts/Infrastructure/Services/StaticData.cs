@@ -3,6 +3,7 @@ using _Project.Scripts.StaticData;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace _Project.Scripts.Infrastructure.Services
 {
@@ -12,6 +13,8 @@ namespace _Project.Scripts.Infrastructure.Services
         public Dictionary<int, SceneInfo> Scenes = new Dictionary<int, SceneInfo>();
         public const string LEVELS = "StaticData/Levels";
         public const string SCENES = "StaticData/Scenes";
+
+        
         public void LoadData()
         {
             Scenes = Resources.LoadAll<SceneInfo>(SCENES).ToDictionary(scene => scene.Id);

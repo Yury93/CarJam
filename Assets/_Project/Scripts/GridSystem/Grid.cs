@@ -3,6 +3,7 @@ using _Project.Scripts.StaticData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _Project.Scripts.GridSystem
@@ -10,7 +11,7 @@ namespace _Project.Scripts.GridSystem
     [System.Serializable]
     public class Grid : IGrid 
     {
-        public const string   GRID_POINT = "Grid/GridPoint";
+        public const string   GRID_POINT = "GridPoint";
         private IAssetProvider _assetProvider;
         private LevelStaticData _levelData;
         public List<GridPoint> GridItems { get; set; } = new List<GridPoint>();
@@ -18,7 +19,7 @@ namespace _Project.Scripts.GridSystem
         {
             _assetProvider = assetProvider;
         }
-        public List<GridPoint> CreateGrid(Transform parent, LevelStaticData levelData)
+        public async Task<List<GridPoint>> CreateGrid(Transform parent, LevelStaticData levelData)
         {
             this._levelData = levelData;
             GridItems = new List<GridPoint>();
@@ -33,7 +34,9 @@ namespace _Project.Scripts.GridSystem
                     {
                         if (_assetProvider != null && parent != null)
                         {
-                            GridPoint cellInstance = _assetProvider.instatiate(GRID_POINT, parent).GetComponent<GridPoint>();
+                            var task =  _assetProvider.instatiateAsync(GRID_POINT, parent);
+                            await task;
+                            GridPoint cellInstance = task.Result.GetComponent<GridPoint>();
                             cellInstance.transform.localScale = new Vector3(levelData.Grid.CellSize, levelData.Grid.CellSize, levelData.Grid.CellSize);
 
                             Vector3 cellSize = GetSizeCell(cellInstance.gameObject);

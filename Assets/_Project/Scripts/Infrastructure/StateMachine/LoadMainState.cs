@@ -28,7 +28,7 @@ namespace _Project.Scripts.Infrastructure.States
         }
         private void OnLoaded()
         {
-            _gameFactory.CreateMainWindow(_stateMachine);
+            _gameFactory.CreateMainWindowAsync(_stateMachine);
         }
         public void Exit()
         {

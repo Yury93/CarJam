@@ -31,7 +31,7 @@ namespace _Project.Scripts.Infrastructure.States
 
         private void OnLoaded()
         {
-            _gameFactory.CreateLevel(_staticData);
+            _gameFactory.CreateLevelAsync(_staticData);
      
             _gameStateMachine.Enter<GameLoopState>(); 
         }
