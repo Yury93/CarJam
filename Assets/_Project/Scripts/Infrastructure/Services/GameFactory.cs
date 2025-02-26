@@ -16,14 +16,17 @@ namespace _Project.Scripts.Infrastructure.Services
         public const string PERSON = "Person";
         public const string PATH_BUILDER = "PathBuilder";
         public const string MAP_TAG = "CarContent";
+        public const string WHITE_MATERIAL = "CarMaterial";
         private IAssetProvider _assetProvider;
         private IPersonPool _personPool;
         private IStateMachine _stateMachine;
-        public GameFactory(IAssetProvider assetProvider, IPersonPool personPool, IStateMachine stateMachine)
+        private IMaterialsPool _materialPool;
+        public GameFactory(IAssetProvider assetProvider, IPersonPool personPool, IStateMachine stateMachine, IMaterialsPool poolColors)
         {
             this._assetProvider = assetProvider;
             this._personPool = personPool;
             this._stateMachine = stateMachine;
+            this._materialPool = poolColors;
         }
         public async Task<IMainWindow> CreateMainWindowAsync(States.IStateMachine stateMachine)
         {
@@ -35,29 +38,62 @@ namespace _Project.Scripts.Infrastructure.Services
             mainWindow.Init();
             return mainWindow;
         }
+        public void ReleaseAssets()
+        {
+            _assetProvider.ReleaseAssets();
+        }
         public async void CreateLevelAsync(IStaticData staticData)
         {
-            LevelStaticData levelStaticData = staticData.GetLevelData(0);
-            var map = GameObject.FindGameObjectWithTag(MAP_TAG);
-            GameObject.FindAnyObjectByType<MiniUI>().Construct(stateMachine:_stateMachine );
+            LevelStaticData levelStaticData = staticData.GetLevelData(Saver.Saver.GetLastLevel());
+            GameObject map = GameObject.FindGameObjectWithTag(MAP_TAG);
+            GameObject.FindAnyObjectByType<MiniUIInfo>().Construct(stateMachine: _stateMachine);
+            var helicopter = GameObject.FindAnyObjectByType<FlyObject>();
+            var deleteCar  = GameObject.FindAnyObjectByType<DeleteCar>();
+            var sortPersons = GameObject.FindAnyObjectByType<SortPersons>();
 
-            var gridTask = CreateGrid(levelStaticData, map);
+            await CreateMaterials(levelStaticData);
+        
+            Task<IGrid> gridTask = CreateGrid(levelStaticData, map);
             await gridTask;
 
-            var pathBuildTask = _assetProvider.instatiateAsync(PATH_BUILDER);
+            Task<GameObject> pathBuildTask = _assetProvider.instatiateAsync(PATH_BUILDER);
             await pathBuildTask;
 
-            var carPath = pathBuildTask.Result.GetComponent<PathBuilder>();
-            List<ICarData> cars = CreateCars(levelStaticData, map, gridTask.Result,carPath);
+            PathBuilder pathBuilder = pathBuildTask.Result.GetComponent<PathBuilder>();
+
+            helicopter.Init(pathBuilder.Stands);
+            deleteCar.Init(helicopter);
+            sortPersons.Construct(pathBuilder);
+
+            List<ICarData> cars = CreateCars(levelStaticData, map, gridTask.Result, pathBuilder);
             SetupMapPosition(levelStaticData, map);
 
+            var switcherColor = GameObject.FindAnyObjectByType<SwitcherColorCar>();
+            switcherColor.Construct(_materialPool,_personPool);
+            switcherColor.Init();
+
             _personPool.CreatePool(cars);
-             
+            
             var personSpawner = GameObject.FindAnyObjectByType<PersonSpawner>();
             personSpawner.Construct(_personPool, this);
-            personSpawner.SetCarStands(carPath.Stands);
+            personSpawner.SetCarStands(pathBuilder.Stands);
             personSpawner.SpawnGroupPersons();
         }
+
+        private async Task CreateMaterials(LevelStaticData levelStaticData)
+        {
+            var materialProperties = levelStaticData.MaterialsData.GetColors();
+            foreach (var materialProperty in materialProperties)
+            {
+                var colorTask = _assetProvider.instatiateMaterialAsync(WHITE_MATERIAL);
+                await colorTask;
+                var carMaterial = colorTask.Result;
+                carMaterial.SetColor( PoolMaterials.MATERIAL_COLOR_KEY,materialProperty.Color);
+                _materialPool.AddMaterial(new MyMaterial(carMaterial,
+                    new MaterialProperty(materialProperty.Color, materialProperty.ColorTag)));
+            }
+        }
+
         public async Task<IPerson> CreatePersonAsync(Vector3 position, Quaternion identity)
         {
             var task = _assetProvider.instatiateAsync(PERSON, position);
@@ -68,7 +104,7 @@ namespace _Project.Scripts.Infrastructure.Services
         private async Task<IGrid> CreateGrid(LevelStaticData levelStaticData, GameObject map)
         {
             IGrid grid = new _Project.Scripts.GridSystem.Grid(_assetProvider);
-           await grid.CreateGrid(map.transform, levelStaticData);
+            await grid.CreateGrid(map.transform, levelStaticData);
             return grid;
         }
         private List<ICarData> CreateCars(LevelStaticData levelStaticData, GameObject map, IGrid grid, PathBuilder carPath)
@@ -86,23 +122,27 @@ namespace _Project.Scripts.Infrastructure.Services
         }
         private Car CreateCar(IGridDirectionItem gridDirection, 
             _Project.Scripts.GridSystem.IGrid grid,
-            LevelStaticData _levelData,
+            LevelStaticData levelData,
             Transform content, 
             PathBuilder carPath)
         {
-    
+            
             foreach (var gridItem in grid.GridItems)
             {
-                Car car = _levelData.Cars.CarPrefabs.First(c => c.Id == gridDirection.Id);
+                Car car = levelData.Cars.CarPrefabs.First(c => c.Id == gridDirection.Id);
                 bool canPlace = grid.CanPlace(gridItem.Id, gridDirection.Direction, car.Size);
                 if (canPlace)
                 {
                     Car carInstance = GameObject.Instantiate(car, content); 
                     carInstance.Init(gridDirection);
-                 
+                     
                     SetupCarPosition(gridDirection, gridItem, carInstance);
-                    var mover = carInstance.GetComponent<CarMover>();
+                    CarMover mover = carInstance.GetComponent<CarMover>();
                     mover.SetPathBuilder(carPath);
+
+                    MaterialProperty materialProp = carInstance.MaterialProperty;
+                    MyMaterial myMaterial = _materialPool.GetMaterial(materialProp.ColorTag); 
+                    carInstance.SwitchColorType(myMaterial);
 
                     grid.MarkCells(gridItem.Id, gridDirection, carInstance.Size);
                

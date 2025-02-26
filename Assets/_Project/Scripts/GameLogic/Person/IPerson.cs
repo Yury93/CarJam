@@ -13,6 +13,8 @@ namespace _Project.Scripts.GameLogic
         float Speed { get; set; }
         bool InCar { get; set; }
        float Space {  get;  }
-        void Init(PersonEntity personEntity);
+        MaterialProperty MaterialProperty { get; }
+        void Init(MaterialProperty personEntity);
+        void RefreshColor(MaterialProperty materialProp);
     }
 }

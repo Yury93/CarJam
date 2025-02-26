@@ -8,37 +8,52 @@ namespace _Project.Scripts.Infrastructure.Services.PersonPool
 {
     public class PersonPool : IPersonPool
     {
-        public List<PersonEntity> PersonEntities { get; private set; }
-        public int TotalPersons => PersonEntities.Count;
+        public List<MaterialProperty> MaterialProperties { get; private set; }
+        public int TotalPersons => MaterialProperties.Count;
 
-        public List<PersonEntity> CreatePool(List<ICarData> cars)
+        public List<MaterialProperty> CreatePool(List<ICarData> cars)
         {
-            PersonEntities = new List<PersonEntity>();
+            MaterialProperties = new List<MaterialProperty>();
             foreach (ICarData car in cars)
             {
-                for (int placePoint = 0; placePoint < car.Placements.Count; placePoint++)
+                for (int placePoint = 0; placePoint < car.GetCountFreePlacment(); placePoint++)
                 {
-                    PersonEntities.Add(new PersonEntity(car.Color,car.ColorTag));
+                    MaterialProperties.Add(new MaterialProperty(car.MaterialProperty.Color,car.MaterialProperty.ColorTag));
                 }
             }
-            MiniUI.instance.ShowQueue(TotalPersons);
-            return PersonEntities;
+            MiniUIInfo.instance.ShowQueue(TotalPersons);
+            return MaterialProperties;
         }
-        public List<PersonEntity> GetPersonsGroup()
+
+        public void CreatePool(List<ICarData> carsData, List<MaterialProperty> removePersonMaterials)
         {
-            if (PersonEntities.Count == 0)
-                return new List<PersonEntity>();
+            CreatePool(carsData);
+            foreach (var personMat in removePersonMaterials)
+            {
+                if (MaterialProperties.Exists(p=>p.ColorTag == personMat.ColorTag))
+                {
+                   var removeTarget = MaterialProperties.FirstOrDefault(p => p.ColorTag == personMat.ColorTag);
+                    MaterialProperties.Remove(removeTarget);
+                }
+            }
+            MiniUIInfo.instance.ShowQueue(TotalPersons);
+        }
+
+        public List<MaterialProperty> GetPersonsGroup()
+        {
+            if (MaterialProperties.Count == 0)
+                return new List<MaterialProperty>();
              
-            var groupItem = PersonEntities
+            var groupItem = MaterialProperties
                 .GroupBy(person => person.Color)
                 .OrderByDescending(group => group.Count())
                 .FirstOrDefault();
              
-            List<PersonEntity> persons = PersonEntities
+            List<MaterialProperty> persons = MaterialProperties
                 .Where(person => person.Color == groupItem.Key)
                 .ToList();
 
-            var groups = PersonEntities
+            var groups = MaterialProperties
                 .Where(person => person.Color != groupItem.Key)
                 .GroupBy(person => person.Color);
 
@@ -57,10 +72,10 @@ namespace _Project.Scripts.Infrastructure.Services.PersonPool
             return persons;
         }
 
-        public void RemovePersonEntity(PersonEntity personEntity)
+        public void RemovePersonEntity(MaterialProperty personEntity)
         { 
-                PersonEntities.Remove(personEntity);
-            MiniUI.instance.ShowQueue(TotalPersons);
+                MaterialProperties.Remove(personEntity);
+            MiniUIInfo.instance.ShowQueue(TotalPersons);
         }
     }
 }

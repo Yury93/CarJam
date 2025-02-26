@@ -5,14 +5,14 @@ using UnityEngine;
 namespace _Project.Scripts.Infrastructure.Services.PersonPool
 {
     [Serializable]
-    public struct PersonEntity
+    public struct MaterialProperty
     {
         public Color Color;
         public ColorTag ColorTag;
-        public PersonEntity(Color color, ColorTag colorTag)
+        public MaterialProperty(Color color, ColorTag colorTag)
         {
             this.Color = color;
             this.ColorTag = colorTag;
-        }
+        } 
     }
 }

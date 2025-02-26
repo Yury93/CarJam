@@ -186,8 +186,28 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <RendererCar>k__BackingField
+      value: 
+      objectReference: {fileID: 5853129866263675807}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: <Placements>k__BackingField.Array.size
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.g
+      value: 0.8715595
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: '<Placements>k__BackingField.Array.data[1]'
@@ -201,6 +221,10 @@ PrefabInstance:
       propertyPath: '<Placements>k__BackingField.Array.data[3]'
       value: 
       objectReference: {fileID: 309480512850689864}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.ColorTag
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8047927719692139015, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.228
@@ -284,11 +308,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23115644487780148, guid: 2dc42346e5313b34c93d598a61994629, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23115644487780148, guid: 2dc42346e5313b34c93d598a61994629, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dc42346e5313b34c93d598a61994629, type: 3}
+--- !u!23 &5853129866263675807 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23115644487780148, guid: 2dc42346e5313b34c93d598a61994629, type: 3}
+  m_PrefabInstance: {fileID: 5866045254327764139}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5870772448964699129 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4870167790249810, guid: 2dc42346e5313b34c93d598a61994629, type: 3}

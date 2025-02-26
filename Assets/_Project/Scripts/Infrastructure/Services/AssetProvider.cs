@@ -18,34 +18,52 @@ namespace _Project.Scripts.Infrastructure.Services
             Addressables.InitializeAsync();
         }
  
-        public async Task<GameObject> instatiateAsync(string path)
+        public async Task<GameObject> instatiateAsync(string name)
         {
-            var task = LoadAsync<GameObject>(path);
+            var task = LoadAsync<GameObject>(name);
             await task;
             var result = task.Result;
             var go = GameObject.Instantiate(result);
             return go;
         } 
-        public async Task<GameObject> instatiateAsync(string path, Vector3 position)
+        public async Task<GameObject> instatiateAsync(string name, Vector3 position)
         {
-            var task = LoadAsync<GameObject>(path);
+            var task = LoadAsync<GameObject>(name);
             await task;
             var result = task.Result;
             var go = GameObject.Instantiate(result);
             go.transform.position = position;
             return go;
         }
-        public async Task<GameObject> instatiateAsync(string path, Transform parent)
+        public async Task<GameObject> instatiateAsync(string name, Transform parent)
         {
-           var task = LoadAsync<GameObject>(path);
+           var task = LoadAsync<GameObject>(name);
             await task;
             var result = task.Result;
             var go = GameObject.Instantiate(result);
             go.transform.SetParent(parent);
             return go;
+        } 
+        public async Task<Material> instatiateMaterialAsync(string name)
+        {
+            var task = LoadAsync<Material>(name);
+            await task;
+            Material newMaterial = UnityEngine.Object.Instantiate(task.Result);
+            return newMaterial;
         }
-
-
+        public void ReleaseAssets()
+        {
+            foreach (var item in _cachedResources)
+            {
+                Addressables.Release(item.Value);
+            }
+            foreach (var item in _handleResources)
+            {
+                Addressables.Release(item.Value);
+            }
+            _cachedResources.Clear();
+            _handleResources.Clear();
+        }
         public async Task<T> LoadAsync<T>(string name) where T : class
         {
             if (_cachedResources.ContainsKey(name))
@@ -83,6 +101,6 @@ namespace _Project.Scripts.Infrastructure.Services
                 Debug.LogError($"Ошибка загрузки {name}");
                 return null;
             }
-        }
+        } 
     }
 }

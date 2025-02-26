@@ -15,11 +15,6 @@ MonoBehaviour:
   m_GroupName: Game
   m_GUID: 84cf2adedca0b9142ac94aec6fc42f03
   m_SerializeEntries:
-  - m_GUID: 546c1839e4fadfe4d8df71e910df26f1
-    m_Address: PathBuilder
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7efe16d48847f3f43a50b16b0010a086
     m_Address: Person
     m_ReadOnly: 0
@@ -27,6 +22,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c16009de60485074095023e259ae5f28
     m_Address: PersonSpawner
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c492f5d354f3a4b4c8ff9dc7e3549801
+    m_Address: CarMaterial
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

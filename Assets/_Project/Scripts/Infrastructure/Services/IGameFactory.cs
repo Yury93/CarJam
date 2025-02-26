@@ -10,8 +10,9 @@ namespace _Project.Scripts.Infrastructure.Services
 {
     public interface IGameFactory : IService
     {
-    Task<IMainWindow> CreateMainWindowAsync(States.IStateMachine stateMachine);
-       void CreateLevelAsync(IStaticData staticData);
-         Task<IPerson> CreatePersonAsync(Vector3 position, Quaternion identity);
+        Task<IMainWindow> CreateMainWindowAsync(States.IStateMachine stateMachine);
+        void CreateLevelAsync(IStaticData staticData);
+        Task<IPerson> CreatePersonAsync(Vector3 position, Quaternion identity);
+        void ReleaseAssets();
     }
 }

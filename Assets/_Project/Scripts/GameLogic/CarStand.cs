@@ -13,14 +13,13 @@ namespace _Project.Scripts.GameLogic
         [field: SerializeField] public Transform RoadPointIn { get; set; }
         [field: SerializeField] public bool Free { get; set; } = true;
         [field: SerializeField] public bool WaitCarProcess { get; set; }
-        public Car Car { get; set; }
+        [field: SerializeField] public Car Car { get; set; }
         public event Action<Car> onStopCar;
         private Coroutine _corWaiter;
         public void SetWaitCar(bool waitCarProcess)
         {
             WaitCarProcess = waitCarProcess;
         }
-
         public void CarExit()
         {
             StartCoroutine(CorSetFreeStand()); 
@@ -28,7 +27,7 @@ namespace _Project.Scripts.GameLogic
             { 
                 var carMover = Car.GetComponent<CarMover>(); 
                 carMover.GetComponent<Collider>().enabled = false;
-               
+                carMover.OnExit();
                 Free = true;
                 Car = null;
                 var path = new List<Vector3>();
@@ -41,11 +40,12 @@ namespace _Project.Scripts.GameLogic
                 path.Clear();
                 path.Add(carMover.transform.position + Vector3.right * 30);
                 yield return  StartCoroutine(carMover.CorMove(path));
-
+                
                 Destroy(carMover.gameObject);
+
+                
             }
         }
-
         private void OnTriggerEnter(Collider other)
         {
             if (1 << other.gameObject.layer == 1 << LayerMask.NameToLayer(Constants.CAR_LAYER))
@@ -58,17 +58,5 @@ namespace _Project.Scripts.GameLogic
                 onStopCar?.Invoke(Car);
             }
         }
-        //public void WaitCar()
-        //{
-        //    Free = false;
-        //    if (_corWaiter != null) StopCoroutine(_corWaiter);
-        //   _corWaiter = StartCoroutine(CorWaiter());
-
-        //}
-        //IEnumerator CorWaiter()
-        //{
-        //    yield return new WaitForSeconds(3f);
-        //    if (Car == null) Free = true;
-        //}
     }
 }

@@ -6,8 +6,7 @@
         yellow,
         black,
         blue,
-        lightBlue,
-        lightYellow,
+        lightBlue, 
         green
     }
 }

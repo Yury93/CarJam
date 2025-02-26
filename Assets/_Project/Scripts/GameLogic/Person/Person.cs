@@ -1,4 +1,5 @@
 using _Project.Scripts.Helper;
+using _Project.Scripts.Infrastructure.Services;
 using _Project.Scripts.Infrastructure.Services.PersonPool;
 using _Project.Scripts.StaticData;
 using System.Collections;
@@ -16,24 +17,28 @@ namespace _Project.Scripts.GameLogic
         private Coroutine _corMove;
         private RaycastHit[] _raycastHits;
         private int _currentPathIndex = 0;
-        private readonly string _materialColor = "_BaseColor";
+         
         [field: SerializeField] public PersonAnimator PersonAnimator { get; private set; }
         [field: SerializeField] public float Speed { get; set; } = 4f;
-        [field: SerializeField] public PersonEntity PersonEntity { get; private set; }
+        [field: SerializeField] public MaterialProperty MaterialProperty { get; private set; }
         [field: SerializeField] public int Number { get; set; } 
-        [field: SerializeField] public ColorTag ColorTag => PersonEntity.ColorTag;
+        [field: SerializeField] public ColorTag ColorTag => MaterialProperty.ColorTag;
         public Transform MyTransform => gameObject.transform; 
-        public Color Color =>  PersonEntity.Color; 
+        public Color Color =>  MaterialProperty.Color; 
         public bool InCar { get  ; set  ; }
         public float Space => _space;
 
-        public void Init(PersonEntity personEntity)
+        public void Init(MaterialProperty materialProp)
         {
-            this.PersonEntity = personEntity;
-            _renderer.material.SetColor(_materialColor, personEntity.Color);
+            RefreshColor(materialProp);
 
-            _layerMask = 1 << LayerMask.NameToLayer(Constants.PERSON_LAYER); 
-        }
+            _layerMask = 1 << LayerMask.NameToLayer(Constants.PERSON_LAYER);
+        } 
+        public void RefreshColor(MaterialProperty materialProp)
+        {
+            this.MaterialProperty = materialProp;
+            _renderer.material.SetColor(PoolMaterials.MATERIAL_COLOR_KEY, materialProp.Color);
+        } 
         public void SetPath(List<Transform> path)
         {
             _path = path;
@@ -65,8 +70,7 @@ namespace _Project.Scripts.GameLogic
         }
 
         private IEnumerator CorMove()
-        {
-            PersonAnimator.PlayRun();
+        { 
             while (_currentPathIndex < _path.Count)
             {
                 Vector3 nextPoint = Vector3.zero;
@@ -77,7 +81,8 @@ namespace _Project.Scripts.GameLogic
                     if (CheckForward() == 0)
                     {
                         MyTransform.forward = nextPoint - transform.position;
-                        MyTransform.position = Vector3.MoveTowards(MyTransform.position, nextPoint, Speed * Time.deltaTime); 
+                        MyTransform.position = Vector3.MoveTowards(MyTransform.position, nextPoint, Speed * Time.deltaTime);
+                        PersonAnimator.PlayRun();
                     }
                     else
                     {
@@ -89,7 +94,6 @@ namespace _Project.Scripts.GameLogic
             }
             PersonAnimator.PlayIdle();
         }
-       
     }
 }
  

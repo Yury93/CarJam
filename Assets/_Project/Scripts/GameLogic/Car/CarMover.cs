@@ -13,6 +13,7 @@ namespace _Project.Scripts.GameLogic
         [SerializeField] private float _speed = 10;
         [SerializeField] private float _rotationSpeed = 100;
         [SerializeField] private float _forwardRaycastDistance = 1f;
+        [SerializeField] private PathBuilder _carPath; 
         private int _carLayer; 
         private List<Vector3> _originalPath,_currentPath;
         private Vector3 _startPosition;
@@ -20,9 +21,11 @@ namespace _Project.Scripts.GameLogic
         private RaycastHit[] _raycastHits;
         private Coroutine _corMove;
         private CarStand _carStand;
-        [SerializeField] private PathBuilder _carPath;
-        public bool IsMoveProcess { get; private set; }
+        private bool _isExit;
         [field: SerializeField] public bool IsStand { get; set; }
+        public bool IsMoveProcess { get; private set; }
+        public Action<CarMover> onExit;
+        private bool _isTouch;
 
         private void Start()
         { 
@@ -34,8 +37,7 @@ namespace _Project.Scripts.GameLogic
         public void SetStandTarget(CarStand freeStand)
         {
             _carStand = freeStand;
-            _carStand.Free = false;
-            //_carStand.WaitCar();
+            _carStand.Free = false; 
         }
         public void SetPathBuilder(PathBuilder carPath)
         {
@@ -51,6 +53,7 @@ namespace _Project.Scripts.GameLogic
         [Button("Move")]
         public void Move()
         {
+            if (_isTouch) return;
             if (IsMoveProcess || _carStand &&
                 Vector3.Distance(_carStand.transform.position, transform.position) <= Constants.EPSILON)
                 return; 
@@ -89,12 +92,10 @@ namespace _Project.Scripts.GameLogic
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
                       transform.position = Vector3.MoveTowards(transform.position, nextPoint, _speed * Time.deltaTime);
                      
-                    //float step = _speed * Time.deltaTime;
-                    //transform.position = Vector3.Lerp(transform.position, nextPoint, step);
-
                     yield return null;
                 }
                 pathIndex++;
+                
             }
             IsMoveProcess = false;
         }
@@ -147,6 +148,18 @@ namespace _Project.Scripts.GameLogic
 
             return LaunchRaycast(transform.TransformDirection(Vector3.forward), _forwardRaycastDistance);
         } 
-       
+        public void OnExit()
+        {
+            if (_isExit == false)
+            {
+                onExit?.Invoke(this);
+                _isExit = true;
+            }
+        }
+
+        public void SetTouch()
+        {
+            _isTouch = true;
+        }
     }  
 }

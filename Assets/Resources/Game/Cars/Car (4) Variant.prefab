@@ -145,6 +145,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23398125768832394, guid: ab26596a331d7ee43a3e9d29e2be9f84, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -153,6 +157,11 @@ PrefabInstance:
 --- !u!4 &3249272948033214038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4870167790249810, guid: ab26596a331d7ee43a3e9d29e2be9f84, type: 3}
+  m_PrefabInstance: {fileID: 3244546541660942596}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3266747568481125518 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23398125768832394, guid: ab26596a331d7ee43a3e9d29e2be9f84, type: 3}
   m_PrefabInstance: {fileID: 3244546541660942596}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6550240942337892315
@@ -244,8 +253,28 @@ PrefabInstance:
       value: 0.5803922
       objectReference: {fileID: 0}
     - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <RendererCar>k__BackingField
+      value: 
+      objectReference: {fileID: 3266747568481125518}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: <Placements>k__BackingField.Array.size
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.g
+      value: 0.16984175
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.Color.r
+      value: 0.066037595
       objectReference: {fileID: 0}
     - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: '<Placements>k__BackingField.Array.data[1]'
@@ -259,6 +288,10 @@ PrefabInstance:
       propertyPath: '<Placements>k__BackingField.Array.data[3]'
       value: 
       objectReference: {fileID: 1552751990857303707}
+    - target: {fileID: 6444642551589754714, guid: fc4245223e4122142bb14239d44230ef, type: 3}
+      propertyPath: <MaterialProperty>k__BackingField.ColorTag
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8047927719692139015, guid: fc4245223e4122142bb14239d44230ef, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.15

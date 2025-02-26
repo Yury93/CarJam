@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace _Project.Scripts.GameLogic
 {
-    
     public class PersonSpawner : MonoBehaviour
     {
         [SerializeField] private int _maxPersonOnLevel = 42;
@@ -18,10 +17,12 @@ namespace _Project.Scripts.GameLogic
         [SerializeField] private float _spawnDelay = 0.1f;
         [SerializeField] private List<Transform> _path;
         [SerializeField] private List<CarStand> _carStands;
-        private Coroutine corSpawn;
+        public List<IPerson> PersonOnLevel => _personsOnLevel;
+        private Coroutine _corSpawn;
         private IPersonPool _personPool;
         private IGameFactory _gameFactory;
-        private int number = 0;
+        private int _number = 0;
+        private IPerson _perviousPerson;
         public void Construct(IPersonPool personPool, IGameFactory gameFactory)
         {
             this._personPool = personPool;
@@ -32,10 +33,10 @@ namespace _Project.Scripts.GameLogic
             _carStands = carStands;
             foreach (var stand in carStands)
             {
-                stand.onStopCar += OnStopCar;
+                stand.onStopCar += CheckStopCar;
             }
         }
-        private void OnStopCar(Car car)
+        public void CheckStopCar(Car car)
         {
             StartCoroutine(CorOnStop());
 
@@ -54,7 +55,7 @@ namespace _Project.Scripts.GameLogic
                 {
                     if (stand.Free || stand.Car == null) continue;
 
-                    var continuousGroup = FindContinuousGroup(stand.Car.ColorTag);
+                    var continuousGroup = FindContinuousGroup(stand.Car.MaterialProperty.ColorTag);
 
                     if (continuousGroup.Count > 0)
                     {
@@ -64,8 +65,9 @@ namespace _Project.Scripts.GameLogic
                             {
                                 stand.Car.SetupPerson(person); 
                                 _personsOnLevel.Remove(person);
+                                stand.Car.OnSitPerson(person);
+                                SpawnGroupPersons();
                             }
-                           
                         }
 
                         if (stand.Car.IsFull)
@@ -73,10 +75,8 @@ namespace _Project.Scripts.GameLogic
                             stand.CarExit();
                             yield return new WaitForSeconds(1f);
                         }
-                        SpawnGroupPersons();
                     }
                 }
-            
             }
         }
         private List<IPerson> FindContinuousGroup(ColorTag targetColor)
@@ -102,7 +102,7 @@ namespace _Project.Scripts.GameLogic
             {
                 if (stand.Car == null) continue;
                  
-                var continuousGroup = FindContinuousGroup(stand.Car.ColorTag);
+                var continuousGroup = FindContinuousGroup(stand.Car.MaterialProperty.ColorTag);
 
                 if (continuousGroup.Count > 0)
                 { 
@@ -119,39 +119,37 @@ namespace _Project.Scripts.GameLogic
             if (poolPersons.Count == 0)
             {
                 Debug.LogError("В пуле больше нет человечков");
+                MiniUIInfo.instance.ShowQueue(0);
                 return;
             }
 
-            if (corSpawn != null) StopCoroutine(corSpawn);
-            corSpawn = StartCoroutine(CorSpawn(poolPersons, _spawnDelay));
+            if (_corSpawn != null) StopCoroutine(_corSpawn);
+            _corSpawn = StartCoroutine(CorSpawn(poolPersons, _spawnDelay));
         }
-        private IEnumerator CorSpawn(List<PersonEntity> persons, float delay)
-        {
-            IPerson perviousPerson = null;
-            foreach (var personItem in persons)
+        private IEnumerator CorSpawn(List<MaterialProperty> materialProperties, float delay)
+        { 
+            foreach (var materialProperty in materialProperties)
             {
                 if (_personsOnLevel.Count < _maxPersonOnLevel)
                 {
-                    if (perviousPerson == null
-                         || perviousPerson != null
-                         && Vector3.Distance(perviousPerson.MyTransform.position, transform.position) > perviousPerson.Space)
-                    {
-                        var task = _gameFactory.CreatePersonAsync(transform.position, Quaternion.identity);
-                        yield return new WaitUntil(() => task.IsCompleted);
-                        var person = task.Result;
-                        person.MyTransform.SetParent(this.transform);
-                        person.Init(personItem);
-                        person.SetPath(_path);
-                        person.MoveToPath();
-                        person.Number = number;
-                        _personsOnLevel.Add(person);
-                        _personPool.RemovePersonEntity(personItem);
-                        number++;
-                        perviousPerson = person;
-                    }
+                    yield return new WaitUntil(() => _perviousPerson == null
+                     || _perviousPerson != null
+                     && Vector3.Distance(_perviousPerson.MyTransform.position, transform.position) > _perviousPerson.Space);
+
+                    var task = _gameFactory.CreatePersonAsync(transform.position, Quaternion.identity);
+                    yield return new WaitUntil(() => task.IsCompleted);
+                    var person = task.Result;
+                    person.MyTransform.SetParent(this.transform);
+                    person.Init(materialProperty);
+                    person.SetPath(_path);
+                    person.MoveToPath();
+                    person.Number = _number;
+                    _personsOnLevel.Add(person);
+                    _personPool.RemovePersonEntity(materialProperty);
+                    _number++;
+                    _perviousPerson = person;
                     yield return null;
-                }
-              
+                } 
             }
         }
         [Button("cal log")]

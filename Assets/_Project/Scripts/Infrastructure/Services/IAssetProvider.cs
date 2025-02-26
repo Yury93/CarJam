@@ -7,9 +7,13 @@ namespace _Project.Scripts.Infrastructure.Services
 {
     public interface IAssetProvider : IService
     {
-        Task<GameObject> instatiateAsync(string path);
-        Task<GameObject> instatiateAsync(string path, Vector3 position);
-        Task<GameObject> instatiateAsync(string path, Transform parent);
-        Task<T> LoadAsync<T>(string name) where T : class; 
+        Task<GameObject> instatiateAsync(string name);
+        Task<GameObject> instatiateAsync(string name, Vector3 position);
+        Task<GameObject> instatiateAsync(string name, Transform parent);
+
+        Task<Material> instatiateMaterialAsync(string name);
+
+        Task<T> LoadAsync<T>(string name) where T : class;
+        void ReleaseAssets();
     }
 }

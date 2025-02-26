@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Grid
   m_GUID: 36c00ce00ba02194bb61f44964c63335
   m_SerializeEntries:
+  - m_GUID: 546c1839e4fadfe4d8df71e910df26f1
+    m_Address: PathBuilder
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 90591f7a26e7754428bf6f62bca9fff7
     m_Address: GridPoint
     m_ReadOnly: 0

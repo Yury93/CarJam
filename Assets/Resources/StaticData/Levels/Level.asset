@@ -143,8 +143,27 @@ MonoBehaviour:
     - {fileID: 8256008848663377201, guid: 8d0e8d77cb05c0f44b48182b0d2e7e0f, type: 3}
     - {fileID: 5763407031128530160, guid: e195100a4f59cbc40bdafbc19762be3e, type: 3}
     - {fileID: 6191205505347752360, guid: 47663c570c583fb49a62bfd52083129e, type: 3}
+  <MaterialsData>k__BackingField:
+    <red>k__BackingField:
+      Color: {r: 1, g: 0, b: 0, a: 1}
+      ColorTag: 0
+    <yellow>k__BackingField:
+      Color: {r: 1, g: 0.9882855, b: 0, a: 1}
+      ColorTag: 1
+    <black>k__BackingField:
+      Color: {r: 0.11698109, g: 0.11698109, b: 0.11698109, a: 1}
+      ColorTag: 2
+    <blue>k__BackingField:
+      Color: {r: 0.32620147, g: 0.42663464, b: 0.9245283, a: 1}
+      ColorTag: 3
+    <lightBlue>k__BackingField:
+      Color: {r: 0, g: 0.8681061, b: 1, a: 1}
+      ColorTag: 4
+    <green>k__BackingField:
+      Color: {r: 0.3226415, g: 1, b: 0.37215403, a: 1}
+      ColorTag: 5
   <Grid>k__BackingField:
-    <Space>k__BackingField: 0.47
+    <Space>k__BackingField: 0.36
     <GridRotate>k__BackingField: 45
     <GridSize>k__BackingField: 12
     <CellSize>k__BackingField: 1

@@ -1,4 +1,8 @@
 using _Project.Scripts.Helper;
+using _Project.Scripts.Infrastructure.Services.PersonPool;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Project.Scripts.StaticData
@@ -7,6 +11,7 @@ namespace _Project.Scripts.StaticData
     public class LevelStaticData : ScriptableObject
     {
         [field:SerializeField] public CarsStaticData Cars {  get; private set; }
+        [field:SerializeField] public MaterialsData MaterialsData { get; private set; }
         [field: SerializeField] public GridStaticData Grid { get; private set; }
         [field: SerializeField] public int Id { get; set; } = 0;
         [field: SerializeField] public string LevelName { get; private set; } = "Level";
@@ -35,4 +40,50 @@ namespace _Project.Scripts.StaticData
             }
         }
     }
+    [Serializable]
+    public class MaterialsData
+    {
+        [field: SerializeField] public MaterialProperty red { get; private set; }
+        [field: SerializeField] public MaterialProperty yellow { get; private set; }
+        [field: SerializeField] public MaterialProperty black { get; private set; }
+        [field: SerializeField] public MaterialProperty blue { get; private set; }
+        [field: SerializeField] public MaterialProperty lightBlue { get; private set; }
+        [field: SerializeField] public MaterialProperty green { get; private set; }
+        public List<MaterialProperty> GetColors()
+        {
+            return new List<MaterialProperty>(){
+            red, yellow, black, blue,lightBlue, green
+            };
+        } 
+        public MaterialProperty GetColor(ColorTag colorTag)
+        {
+            if (colorTag == ColorTag.red)
+            {
+                return red;
+            }
+            if (colorTag == ColorTag.yellow)
+            {
+                return yellow;
+            }
+            if (colorTag == ColorTag.black)
+            {
+                return black;
+            }
+            if (colorTag == ColorTag.blue)
+            {
+                return blue;
+            }
+            if (colorTag == ColorTag.lightBlue)
+            {
+                return lightBlue;
+            }
+            if (colorTag == ColorTag.green)
+            {
+                return green;
+            }
+            Debug.LogError("user error 200 :)");
+            return green;
+        }
+    }
+     
 }

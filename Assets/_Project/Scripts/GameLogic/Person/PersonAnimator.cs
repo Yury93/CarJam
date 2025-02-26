@@ -5,6 +5,7 @@ public class PersonAnimator : MonoBehaviour
     public readonly int Run = Animator.StringToHash("Run");
     public readonly int Idle = Animator.StringToHash("Idle");
     public readonly int Sit = Animator.StringToHash("Sit");
+    bool isSit = false;
     public Animator Animator;
     private void OnValidate()
     {
@@ -12,13 +13,13 @@ public class PersonAnimator : MonoBehaviour
     }
     public void PlayRun()
     {
-        Animator.ResetTrigger(Sit);
+        if (isSit) return;
         Animator.ResetTrigger(Idle);
         Animator.SetTrigger(Run);
     }
     public void PlayIdle()
     {
-        Animator.ResetTrigger(Sit);
+        if (isSit) return;
         Animator.ResetTrigger(Run);
         Animator.SetTrigger(Idle);
     }
@@ -27,5 +28,6 @@ public class PersonAnimator : MonoBehaviour
         Animator.ResetTrigger(Idle);
         Animator.ResetTrigger(Run);
         Animator.SetTrigger(Sit);
+        isSit = true;
     }
 }

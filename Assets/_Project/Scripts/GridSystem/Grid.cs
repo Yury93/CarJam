@@ -9,7 +9,7 @@ using UnityEngine;
 namespace _Project.Scripts.GridSystem
 {
     [System.Serializable]
-    public class Grid : IGrid 
+    public class Grid<TShape> : IGrid where TShape : IShape
     {
         public const string   GRID_POINT = "GridPoint";
         private IAssetProvider _assetProvider;
@@ -151,4 +151,9 @@ namespace _Project.Scripts.GridSystem
             cellInstance.transform.localPosition = new Vector3(x, 0,z);
         }
     } 
+    public interface IShape
+    {
+         bool IsPointInsideShape(int line, int column, int gridSize);
+         void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize);
+    }
 }

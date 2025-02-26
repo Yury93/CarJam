@@ -52,9 +52,13 @@ MonoBehaviour:
   _rightPoint: {fileID: 5374287961079454771}
   <Id>k__BackingField: 0
   <Size>k__BackingField: 1
-  <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <Placements>k__BackingField:
   - {fileID: 2282487522241453689}
+  <Number>k__BackingField: 0
+  <RendererCar>k__BackingField: {fileID: 0}
+  <MaterialProperty>k__BackingField:
+    Color: {r: 0, g: 0, b: 0, a: 0}
+    ColorTag: 0
 --- !u!114 &3460947885878681677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,7 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _rotationSpeed: 15
+  _rotationSpeed: 10
   _forwardRaycastDistance: 1.1
   _carPath: {fileID: 0}
   <IsStand>k__BackingField: 0

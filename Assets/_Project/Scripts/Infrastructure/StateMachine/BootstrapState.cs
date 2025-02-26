@@ -13,9 +13,14 @@ namespace _Project.Scripts.Infrastructure.States
         {
             _stateMachine = stateMachine;
             var assetProvider = new AssetProvider();
+            var poolColors = new PoolMaterials();
+            services.RegisterSingle<IMaterialsPool>(poolColors);
             services.RegisterSingle<IAssetProvider>(assetProvider);
             services.RegisterSingle<IPersonPool>(new PersonPool());
-            services.RegisterSingle<IGameFactory>(new GameFactory(assetProvider,services.Single<IPersonPool>(),stateMachine));
+            services.RegisterSingle<IGameFactory>(new GameFactory(assetProvider
+                ,services.Single<IPersonPool>()
+                ,stateMachine
+                , services.Single<IMaterialsPool>()));
             services.RegisterSingle<IStaticData>(new _Project.Scripts.Infrastructure.Services.StaticData());
           
         }

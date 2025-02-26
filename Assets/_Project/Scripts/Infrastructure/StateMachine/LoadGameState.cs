@@ -13,32 +13,31 @@ namespace _Project.Scripts.Infrastructure.States
         private SceneLoader _sceneLoader;
         private IPersonPool _personPool;
 
-        public LoadGameState(GameStateMachine gameStateMachine, IStaticData staticData, IGameFactory gameFactory,IPersonPool personPool, SceneLoader sceneLoader)
+        public LoadGameState(GameStateMachine gameStateMachine, 
+            IStaticData staticData, 
+            IGameFactory gameFactory,
+            IPersonPool personPool, 
+            SceneLoader sceneLoader)
         {
             this._gameStateMachine = gameStateMachine;
             this._staticData = staticData;
             this._gameFactory = gameFactory;
             this._sceneLoader = sceneLoader;
             this._personPool = personPool;
-        }
-
+        } 
         public void Enter()
         {
+            _gameFactory.ReleaseAssets();
             int currentScene = Saver.Saver.GetCurrentScene();
-            _sceneLoader.Load(_staticData.GetScene(currentScene).SceneKey, onLoaded: () => OnLoaded());
-          
-        }
-
+            _sceneLoader.Load(_staticData.GetScene(currentScene).SceneKey, onLoaded: () => OnLoaded()); 
+        } 
         private void OnLoaded()
         {
             _gameFactory.CreateLevelAsync(_staticData);
-     
             _gameStateMachine.Enter<GameLoopState>(); 
-        }
-
+        } 
         public void Exit()
-        {
-             
+        {   
         }
     }
 }
