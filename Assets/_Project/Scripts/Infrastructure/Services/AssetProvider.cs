@@ -53,10 +53,7 @@ namespace _Project.Scripts.Infrastructure.Services
         }
         public void ReleaseAssets()
         {
-            foreach (var item in _cachedResources)
-            {
-                Addressables.Release(item.Value);
-            }
+           
             foreach (var item in _handleResources)
             {
                 Addressables.Release(item.Value);

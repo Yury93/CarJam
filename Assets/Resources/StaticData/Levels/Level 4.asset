@@ -168,6 +168,6 @@ MonoBehaviour:
     <GridSize>k__BackingField: 12
     <CellSize>k__BackingField: 1
     <OffsetPosition>k__BackingField: {x: 0, y: 0, z: 1.5}
-  <Id>k__BackingField: 3
+  <Id>k__BackingField: 4
   <LevelName>k__BackingField: Level 1
   <SetupDirection>k__BackingField: 2

@@ -156,4 +156,16 @@ namespace _Project.Scripts.GridSystem
          bool IsPointInsideShape(int line, int column, int gridSize);
          void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize);
     }
+    public class Romb : IShape
+    {
+        public bool IsPointInsideShape(int line, int column, int gridSize)
+        {
+            return true;
+        }
+
+        public void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize)
+        {
+            return;
+        }
+    }
 }

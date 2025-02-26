@@ -1186,6 +1186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   queuePersonText: {fileID: 1507449101}
   closeGameButton: {fileID: 1480473057}
+  personSpawner: {fileID: 567297899}
 --- !u!4 &567297896 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5573390654184220687, guid: c16009de60485074095023e259ae5f28, type: 3}

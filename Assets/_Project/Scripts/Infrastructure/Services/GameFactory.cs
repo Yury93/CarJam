@@ -5,6 +5,7 @@ using _Project.Scripts.Infrastructure.States;
 using _Project.Scripts.StaticData;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -103,7 +104,7 @@ namespace _Project.Scripts.Infrastructure.Services
         }
         private async Task<IGrid> CreateGrid(LevelStaticData levelStaticData, GameObject map)
         {
-            IGrid grid = new _Project.Scripts.GridSystem.Grid(_assetProvider);
+            IGrid grid = new _Project.Scripts.GridSystem.Grid<Romb>(_assetProvider);
             await grid.CreateGrid(map.transform, levelStaticData);
             return grid;
         }
