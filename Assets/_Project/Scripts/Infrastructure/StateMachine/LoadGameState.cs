@@ -25,13 +25,17 @@ namespace _Project.Scripts.Infrastructure.States
             this._sceneLoader = sceneLoader;
             this._personPool = personPool;
         } 
-        public void Enter()
+        public async void Enter()
         {
-            _gameFactory.ReleaseAssets();
-            int currentScene = Saver.Saver.GetCurrentScene();
-            _sceneLoader.Load(_staticData.GetScene(currentScene).SceneKey, onLoaded: () => OnLoaded()); 
+            await _gameFactory.ReleaseAssetsAsync();
+            _sceneLoader.Load("Loaded", onLoaded: () => OnLoadScene()); 
         } 
-        private void OnLoaded()
+        private void OnLoadScene()
+        {
+            int currentScene = Saver.Saver.GetCurrentScene();
+            _sceneLoader.Load(_staticData.GetScene(currentScene).SceneKey, onLoaded: () => OnLoadedLevel());
+        } 
+        private void OnLoadedLevel()
         {
             _gameFactory.CreateLevelAsync(_staticData);
             _gameStateMachine.Enter<GameLoopState>(); 

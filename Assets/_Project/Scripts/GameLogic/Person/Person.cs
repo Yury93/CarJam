@@ -48,12 +48,18 @@ namespace _Project.Scripts.GameLogic
         {
             if (InCar) return;
 
-            if ( _corMove != null)
+            StopCoroutineMove();
+            _corMove = StartCoroutine(CorMove());
+        }
+
+        public void StopCoroutineMove()
+        {
+            if (_corMove != null)
             {
                 StopCoroutine(_corMove);
             }
-            _corMove = StartCoroutine(CorMove());
         }
+
         public int CheckForward()
         {
             _raycastHits = new RaycastHit[1];

@@ -128,10 +128,10 @@ namespace _Project.Scripts.GameLogic
             }
             return false;
         }
-        //private void Update()
-        //{
-        //    ShowDebugLine();
-        //}
+        private void Update()
+        {
+            ShowDebugLine();
+        }
         private void ShowDebugLine()
         {
             for (int i = 0; i < _points.Count; i++)

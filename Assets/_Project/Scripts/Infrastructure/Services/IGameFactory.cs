@@ -13,6 +13,6 @@ namespace _Project.Scripts.Infrastructure.Services
         Task<IMainWindow> CreateMainWindowAsync(States.IStateMachine stateMachine);
         void CreateLevelAsync(IStaticData staticData);
         Task<IPerson> CreatePersonAsync(Vector3 position, Quaternion identity);
-        void ReleaseAssets();
+        Task ReleaseAssetsAsync();
     }
 }

@@ -14,10 +14,12 @@ namespace _Project.Scripts.GridSystem
         public const string   GRID_POINT = "GridPoint";
         private IAssetProvider _assetProvider;
         private LevelStaticData _levelData;
+        private TShape shape;
         public List<GridPoint> GridItems { get; set; } = new List<GridPoint>();
-        public Grid(IAssetProvider assetProvider)
+        public Grid(IAssetProvider assetProvider, TShape shape)
         {
             _assetProvider = assetProvider;
+            this.shape = shape;
         }
         public async Task<List<GridPoint>> CreateGrid(Transform parent, LevelStaticData levelData)
         {
@@ -30,7 +32,7 @@ namespace _Project.Scripts.GridSystem
             {
                 for (int column = 0; column < gridSize; column++)
                 {
-                    if (IsPointInsideShape(line, column, gridSize))
+                    if (shape.IsPointInsideShape(line, column, gridSize))
                     {
                         if (_assetProvider != null && parent != null)
                         {
@@ -40,7 +42,7 @@ namespace _Project.Scripts.GridSystem
                             cellInstance.transform.localScale = new Vector3(levelData.Grid.CellSize, levelData.Grid.CellSize, levelData.Grid.CellSize);
 
                             Vector3 cellSize = GetSizeCell(cellInstance.gameObject);
-                            SetupPosition(cellInstance.gameObject, cellSize, line, column, gridSize);
+                            shape.SetupPosition(cellInstance.gameObject, cellSize, line, column, gridSize, _levelData.Grid.Space);
                             GridItems.Add(cellInstance);
                             cellInstance.Init(cellInstance.transform.localPosition, column, line, idItem);
                             idItem++; 
@@ -131,41 +133,50 @@ namespace _Project.Scripts.GridSystem
             cellSize = collider.bounds.size;
 
             return cellSize;
-        }
-         
-
-        private bool IsPointInsideShape(int line, int column, int gridSize)
-        { 
-            int halfSize = gridSize / 2;
-            return Math.Abs(line - halfSize) + Math.Abs(column - halfSize) <= halfSize;
         } 
-        private void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize)
-        {
-            float centrCellWidth = cellSize.x * 0.5f;
-            float centrCellHeight = cellSize.y * 0.5f;
-             
-            int halfSize = gridSize / 2;
-            float x = (column - halfSize) * (cellSize.x + _levelData.Grid.Space);
-            float z = (line - halfSize) * (cellSize.y + _levelData.Grid.Space);
-
-            cellInstance.transform.localPosition = new Vector3(x, 0,z);
-        }
     } 
     public interface IShape
     {
-         bool IsPointInsideShape(int line, int column, int gridSize);
-         void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize);
+        bool IsPointInsideShape(int line, int column, int gridSize);
+        void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize, float space);
     }
     public class Romb : IShape
     {
         public bool IsPointInsideShape(int line, int column, int gridSize)
         {
-            return true;
-        }
-
-        public void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize)
+            int halfSize = gridSize / 2;
+            return Math.Abs(line - halfSize) + Math.Abs(column - halfSize) <= halfSize;
+        } 
+        public void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize, float space)
         {
-            return;
+            float centrCellWidth = cellSize.x * 0.5f;
+            float centrCellHeight = cellSize.y * 0.5f;
+
+            int halfSize = gridSize / 2;
+            float x = (column - halfSize) * (cellSize.x + space);
+            float z = (line - halfSize) * (cellSize.y + space);
+
+            cellInstance.transform.localPosition = new Vector3(x, 0, z);
+        } 
+    }
+    public class Triangle : IShape
+    {
+        public bool IsPointInsideShape(int line, int column, int gridSize)
+        {
+            return column >= line && column < gridSize - line;
+        }
+        public void SetupPosition(GameObject cellInstance, Vector3 cellSize, int line, int column, int gridSize, float space)
+        {
+            float cellWidth = cellSize.x + space;
+            float cellHeight = cellSize.y + space;
+             
+            float offsetX = (gridSize - 1 - line) * cellWidth * 0.5f;
+             
+            float x = column * cellWidth - offsetX;
+             
+            float z = line * cellHeight;
+
+            cellInstance.transform.localPosition = new Vector3(x, 0, z);
         }
     }
 }

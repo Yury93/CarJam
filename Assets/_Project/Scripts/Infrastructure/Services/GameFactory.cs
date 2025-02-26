@@ -38,11 +38,7 @@ namespace _Project.Scripts.Infrastructure.Services
             mainWindow.Construct(stateMachine);
             mainWindow.Init();
             return mainWindow;
-        }
-        public void ReleaseAssets()
-        {
-            _assetProvider.ReleaseAssets();
-        }
+        } 
         public async void CreateLevelAsync(IStaticData staticData)
         {
             LevelStaticData levelStaticData = staticData.GetLevelData(Saver.Saver.GetLastLevel());
@@ -104,7 +100,7 @@ namespace _Project.Scripts.Infrastructure.Services
         }
         private async Task<IGrid> CreateGrid(LevelStaticData levelStaticData, GameObject map)
         {
-            IGrid grid = new _Project.Scripts.GridSystem.Grid<Romb>(_assetProvider);
+            IGrid grid = new _Project.Scripts.GridSystem.Grid<Romb>(_assetProvider, new Romb());
             await grid.CreateGrid(map.transform, levelStaticData);
             return grid;
         }
@@ -166,6 +162,12 @@ namespace _Project.Scripts.Infrastructure.Services
         {
             map.transform.localRotation *= Quaternion.Euler(new Vector3(0, levelStaticData.Grid.GridRotate, 0));
             map.transform.position += levelStaticData.Grid.OffsetPosition;
-        } 
+        }
+         
+        public async Task ReleaseAssetsAsync()
+        {
+            await _assetProvider.ReleaseAssetsAsync();
+         
+        }
     }
 }

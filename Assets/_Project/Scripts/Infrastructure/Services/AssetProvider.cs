@@ -51,16 +51,7 @@ namespace _Project.Scripts.Infrastructure.Services
             Material newMaterial = UnityEngine.Object.Instantiate(task.Result);
             return newMaterial;
         }
-        public void ReleaseAssets()
-        {
-           
-            foreach (var item in _handleResources)
-            {
-                Addressables.Release(item.Value);
-            }
-            _cachedResources.Clear();
-            _handleResources.Clear();
-        }
+        
         public async Task<T> LoadAsync<T>(string name) where T : class
         {
             if (_cachedResources.ContainsKey(name))
@@ -98,6 +89,17 @@ namespace _Project.Scripts.Infrastructure.Services
                 Debug.LogError($"Ошибка загрузки {name}");
                 return null;
             }
-        } 
+        }
+
+        public async Task  ReleaseAssetsAsync()
+        {
+            foreach (var item in _handleResources)
+            {
+                Addressables.Release(item.Value);
+            }
+            _cachedResources.Clear();
+            _handleResources.Clear();
+            await Task.Yield();
+        }
     }
 }

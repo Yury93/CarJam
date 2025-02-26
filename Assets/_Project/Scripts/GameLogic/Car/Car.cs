@@ -52,6 +52,7 @@ namespace _Project.Scripts.GameLogic
             person.InCar = true;
             person.MyTransform.localPosition = Vector3.zero;
             person.MyTransform.localRotation = Quaternion.identity;
+            person.StopCoroutineMove();
             person.MyTransform.GetComponent<PersonAnimator>().PlaySit();
             markPlaceCount++; 
         } 

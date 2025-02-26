@@ -14,6 +14,6 @@ namespace _Project.Scripts.Infrastructure.Services
         Task<Material> instatiateMaterialAsync(string name);
 
         Task<T> LoadAsync<T>(string name) where T : class;
-        void ReleaseAssets();
+        Task ReleaseAssetsAsync();
     }
 }

@@ -16,5 +16,6 @@ namespace _Project.Scripts.GameLogic
         MaterialProperty MaterialProperty { get; }
         void Init(MaterialProperty personEntity);
         void RefreshColor(MaterialProperty materialProp);
+        void  StopCoroutineMove();
     }
 }
